@@ -1,0 +1,13 @@
+# Windows / Access temporary files
+~$*
+*.laccdb
+*.ldb
+Thumbs.db
+Desktop.ini
+
+# Local backups users may create while editing
+*.bak
+*.tmp
+
+# OS
+.DS_Store
