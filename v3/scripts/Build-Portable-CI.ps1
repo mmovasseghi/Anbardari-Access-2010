@@ -32,13 +32,11 @@ Copy-Item (Join-Path $v3Root "راهنما-نسخه۳.txt") (Join-Path $outDir "
 Copy-Item (Join-Path $repoRoot "tools\generate_unlock_code.py") (Join-Path $outDir "tools\") -ErrorAction SilentlyContinue
 Copy-Item (Join-Path $repoRoot "tools\مولد-کد-مدیر.bat") (Join-Path $outDir "tools\") -ErrorAction SilentlyContinue
 
-# ساخت دیتابیس (نیاز به Access روی همان PC یک بار)
-$buildDb = Join-Path $outDir "ساخت-دیتابیس-اولیه"
+# ساخت پایگاه — فقط جداول (بدون frmMain)
+$buildDb = Join-Path $outDir "build-db"
 New-Item -ItemType Directory -Path $buildDb | Out-Null
-Copy-Item (Join-Path $repoRoot "build\Build-Inventory.vbs") $buildDb -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $repoRoot "build\ساخت-دیتابیس.bat") $buildDb -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $repoRoot "build\modules") (Join-Path $buildDb "modules") -Recurse -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $repoRoot "build\formcode") (Join-Path $buildDb "formcode") -Recurse -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $repoRoot "build\Build-Database-TablesOnly.vbs") $buildDb -Force
+Copy-Item (Join-Path $v3Root "portable-template\ساخت-پایگاه-داده.bat") (Join-Path $outDir "ساخت-پایگاه-داده.bat") -Force
 
 @"
 انباربان v3 — پرتابل
@@ -46,7 +44,8 @@ Copy-Item (Join-Path $repoRoot "build\formcode") (Join-Path $buildDb "formcode")
 ۱) روی «شروع انباربان.bat» دوبار کلیک کنید.
 
 ۲) اگر پیام «پایگاه داده پیدا نشد» دیدید:
-   - اگر Access دارید: پوشه «ساخت-دیتابیس-اولیه» → ساخت-دیتابیس.bat
+   - «ساخت-پایگاه-داده.bat» (فقط جداول، بدون frmMain)
+   - یا Anbarban.exe را بزنید (خودکار اگر ACE نصب باشد)
    - فایل Inventory.accdb را در پوشه Data کپی کنید.
 
 ۳) پیش‌نیاز: .NET 4.8 + ACE OLEDB 64-bit
