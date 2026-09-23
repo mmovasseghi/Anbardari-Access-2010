@@ -2,13 +2,25 @@ var App = (function(){
   var db = { products:[], documents:[], items:[], seq:{product:1, document:1, item:1} };
   var dataPath = "";
 
+  function hasActiveX(){
+    try{ new ActiveXObject("Scripting.FileSystemObject"); return true; }catch(e){ return false; }
+  }
   function fso(){ return new ActiveXObject("Scripting.FileSystemObject"); }
   function appDir(){
     var p = document.location.pathname.replace(/\//g,"\\");
     if(p.charAt(0)==="\\") p = p.substring(1);
     return p.substring(0, p.lastIndexOf("\\"));
   }
+  function blankDb(){ return { products:[], documents:[], items:[], seq:{product:1, document:1, item:1} }; }
   function ensureData(){
+    if(!hasActiveX()){
+      try{
+        var raw = window.localStorage.getItem("anbardari_db");
+        db = raw ? eval("("+raw+")") : blankDb();
+      }catch(e){ db = blankDb(); }
+      normalizeDb();
+      return;
+    }
     var fs = fso();
     var dir = appDir();
     var dataDir = fs.GetParentFolderName(dir) + "\\data";
@@ -17,18 +29,26 @@ var App = (function(){
     if(!fs.FileExists(dataPath)) save();
     else load();
   }
+  function normalizeDb(){
+    if(!db || typeof db!=="object") db = blankDb();
+    if(!db.seq) db.seq={product:1,document:1,item:1};
+    if(!db.products) db.products=[];
+    if(!db.documents) db.documents=[];
+    if(!db.items) db.items=[];
+  }
   function load(){
     try{
       var ts = fso().OpenTextFile(dataPath,1,false,-1);
       var txt = ts.ReadAll(); ts.Close();
       if(txt && txt.length>0) db = eval("("+txt+")");
-      if(!db.seq) db.seq={product:1,document:1,item:1};
-      if(!db.products) db.products=[];
-      if(!db.documents) db.documents=[];
-      if(!db.items) db.items=[];
-    }catch(e){ db = { products:[], documents:[], items:[], seq:{product:1, document:1, item:1} }; }
+      normalizeDb();
+    }catch(e){ db = blankDb(); }
   }
   function save(){
+    if(!hasActiveX()){
+      try{ window.localStorage.setItem("anbardari_db", stringify(db)); }catch(e){}
+      return;
+    }
     var ts = fso().OpenTextFile(dataPath,2,true,-1);
     ts.Write(stringify(db));
     ts.Close();
