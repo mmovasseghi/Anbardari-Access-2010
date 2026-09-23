@@ -8,7 +8,8 @@
 - [ ] ماژول `modConstants`
 - [ ] ماژول `modValidation`
 - [ ] ماژول `modStock`
-- [ ] کوئری‌های `qryStock` / `qryLowStock` / `qryInOut` / `qryProductSearch`
+- [ ] ماژول `modUI`
+- [ ] اعمال ظاهر طبق `docs/UI_DESIGN.md`- [ ] کوئری‌های `qryStock` / `qryLowStock` / `qryInOut` / `qryProductSearch`
 - [ ] فرم `frmProducts`
 - [ ] فرم `frmDocumentItems`
 - [ ] فرم `frmDocuments` + Subform

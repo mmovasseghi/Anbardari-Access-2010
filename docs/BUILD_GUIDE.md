@@ -82,6 +82,7 @@
 | `modConstants` | `vba/modConstants.bas` |
 | `modValidation` | `vba/modValidation.bas` |
 | `modStock` | `vba/modStock.bas` |
+| `modUI` | `vba/modUI.bas` |
 
 نکته: اگر Access هنگام Import فایل `.bas` خط Header می‌خواهد، فقط متن داخل فایل را Copy/Paste کنید (از `Option Compare Database` به بعد).
 
@@ -97,6 +98,12 @@ Create → Query Design → SQL View
 | `qryProductSearch` | `queries/qryProductSearch.sql` |
 
 فقط متن SQL خالص را paste کنید (خطوط توضیح با `'` را حذف کنید اگر Access خطا داد).
+
+## مرحله 5b — تم ظاهری
+
+قبل از ساخت فرم‌ها، `docs/UI_DESIGN.md` را بخوانید.
+ماژول `modUI` رنگ‌ها و فونت Tahoma را در `Form_Load` اعمال می‌کند.
+نام کنترل‌های عنوان/دکمه باید با مشخصات فرم یکی باشد.
 
 ## مرحله 6 — فرم‌ها
 

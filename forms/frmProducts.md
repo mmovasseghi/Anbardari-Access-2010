@@ -1,35 +1,38 @@
 # مشخصات فرم frmProducts
 
-## تنظیمات فرم
+## تنظیمات
 
 | ویژگی | مقدار |
 |---|---|
 | نام | `frmProducts` |
 | Record Source | `Products` |
 | Caption | مدیریت کالاها |
-| Default View | Single Form یا Continuous Form |
+| Default View | Single Form |
+| Has Form Header | Yes |
 | Navigation Buttons | Yes |
 
-## کنترل‌ها (همه با Control Source متناظر)
+## کنترل‌ها
 
-| نام کنترل | نوع | Control Source | برچسب فارسی |
+| نام | نوع | Control Source | برچسب فارسی |
 |---|---|---|---|
-| `txtID` | Text Box | `ID` | شناسه (Locked = Yes) |
+| `lblTitle` | Label | — | مدیریت کالاها |
+| `txtID` | Text Box | `ID` | شناسه (Locked) |
 | `txtProductName` | Text Box | `ProductName` | نام کالا |
 | `txtProductCode` | Text Box | `ProductCode` | کد کالا |
 | `txtUnit` | Text Box | `Unit` | واحد |
 | `txtCurrentStock` | Text Box | `CurrentStock` | موجودی فعلی |
 | `txtMinimumStock` | Text Box | `MinimumStock` | حداقل موجودی |
 | `chkIsActive` | Check Box | `IsActive` | فعال |
+| `lblStockHint` | Label | — | وضعیت موجودی |
 | `btnNew` | Command Button | — | جدید |
 | `btnClose` | Command Button | — | بستن |
 
 ## پیش‌فرض‌ها
 
-- `CurrentStock` پیش‌فرض: `0`
-- `MinimumStock` پیش‌فرض: `0`
-- `IsActive` پیش‌فرض: `Yes`
+- `CurrentStock` = 0
+- `MinimumStock` = 0
+- `IsActive` = Yes
 
 ## کد
 
-محتوای `vba/frmProducts_Code.bas` را در ماژول فرم paste کنید.
+`vba/frmProducts_Code.bas`

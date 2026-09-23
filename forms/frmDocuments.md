@@ -1,6 +1,6 @@
 # مشخصات فرم frmDocuments
 
-## تنظیمات فرم
+## تنظیمات
 
 | ویژگی | مقدار |
 |---|---|
@@ -8,27 +8,30 @@
 | Record Source | `Documents` |
 | Caption | ثبت سند انبار |
 | Default View | Single Form |
+| Has Form Header | Yes |
 | Navigation Buttons | Yes |
 
-## کنترل‌های هدر سند
+## کنترل‌ها
 
-| نام کنترل | نوع | Control Source | برچسب فارسی | نکات |
-|---|---|---|---|---|
-| `txtID` | Text Box | `ID` | شناسه | Locked = Yes |
-| `txtDocumentNumber` | Text Box | `DocumentNumber` | شماره سند | |
-| `txtDeliveryNumber` | Text Box | `DeliveryNumber` | شماره حواله | برای OUT الزامی |
-| `lblDeliveryNumber` | Label | — | شماره حواله: | Caption در VBA عوض می‌شود |
-| `cboTransactionType` | Combo Box | `TransactionType` | نوع تراکنش | Value List: `IN;ورود;OUT;خروج` |
-| `txtDocumentDate` | Text Box | `DocumentDate` | تاریخ سند | Format: Short Date |
-| `txtSource` | Text Box | `Source` | مبدأ | |
-| `txtDestination` | Text Box | `Destination` | مقصد | |
-| `txtDescription` | Text Box | `Description` | توضیحات | |
-| `subDocumentItems` | Subform | — | اقلام سند | Source Object = `frmDocumentItems` |
-| `btnSave` | Command Button | — | ذخیره | |
-| `btnNew` | Command Button | — | سند جدید | |
-| `btnClose` | Command Button | — | بستن | |
+| نام | نوع | Control Source | برچسب فارسی |
+|---|---|---|---|
+| `lblTitle` | Label | — | ثبت سند انبار (در Header) |
+| `txtID` | Text Box | `ID` | شناسه (Locked) |
+| `txtDocumentNumber` | Text Box | `DocumentNumber` | شماره سند |
+| `txtDeliveryNumber` | Text Box | `DeliveryNumber` | شماره حواله |
+| `lblDeliveryNumber` | Label | — | شماره حواله: |
+| `cboTransactionType` | Combo Box | `TransactionType` | نوع تراکنش |
+| `txtDocumentDate` | Text Box | `DocumentDate` | تاریخ سند |
+| `txtSource` | Text Box | `Source` | مبدأ |
+| `txtDestination` | Text Box | `Destination` | مقصد |
+| `txtDescription` | Text Box | `Description` | توضیحات |
+| `lblSectionItems` | Label | — | اقلام سند |
+| `subDocumentItems` | Subform | — | Source Object = `frmDocumentItems` |
+| `btnSave` | Command Button | — | ذخیره |
+| `btnNew` | Command Button | — | سند جدید |
+| `btnClose` | Command Button | — | بستن |
 
-## تنظیم Combo نوع تراکنش
+## Combo نوع تراکنش
 
 | ویژگی | مقدار |
 |---|---|
@@ -39,25 +42,21 @@
 | Bound Column | 1 |
 | Limit To List | Yes |
 
-کاربر «ورود / خروج» را می‌بیند؛ مقدار ذخیره‌شده `IN` / `OUT` است.
-
 ## Subform
 
-| ویژگی Subform Control | مقدار |
+| ویژگی | مقدار |
 |---|---|
 | Name | `subDocumentItems` |
 | Source Object | `frmDocumentItems` |
 | Link Master Fields | `ID` |
 | Link Child Fields | `DocumentID` |
-| Default View (child) | Datasheet |
+
+## رفتار مهم
+
+- برای OUT، حواله الزامی است
+- بعد از ثبت اقلام، نوع تراکنش قفل می‌شود
+- تاریخ اگر خالی باشد، تاریخ روز گذاشته می‌شود
 
 ## کد
 
-محتوای `vba/frmDocuments_Code.bas` را در ماژول فرم paste کنید.
-
-## ترتیب کار کاربر
-
-1. نوع تراکنش را انتخاب کند
-2. برای خروج، شماره حواله را وارد کند
-3. سند را ذخیره کند
-4. اقلام را در Subform وارد کند
+`vba/frmDocuments_Code.bas`

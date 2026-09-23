@@ -1,13 +1,30 @@
 '------------------------------------------------------------------------------
 ' Form: frmProducts — code behind
 ' Target: Microsoft Access 2010
-' Record Source: Products
 '------------------------------------------------------------------------------
 Option Compare Database
 Option Explicit
 
 Private Sub Form_Load()
     Me.Caption = "مدیریت کالاها"
+    ApplyTheme
+End Sub
+
+Private Sub ApplyTheme()
+    On Error Resume Next
+    UI_StyleFormBackground Me
+    UI_StyleLabel Me!lblTitle, True
+    Me!lblTitle.Caption = "مدیریت کالاها"
+
+    UI_StyleTextBox Me!txtProductName
+    UI_StyleTextBox Me!txtProductCode
+    UI_StyleTextBox Me!txtUnit
+    UI_StyleTextBox Me!txtCurrentStock
+    UI_StyleTextBox Me!txtMinimumStock
+
+    UI_StylePrimaryButton Me!btnNew
+    UI_StyleSecondaryButton Me!btnClose
+    On Error GoTo 0
 End Sub
 
 Private Sub Form_BeforeUpdate(Cancel As Integer)
@@ -35,6 +52,21 @@ Private Sub Form_BeforeUpdate(Cancel As Integer)
             Exit Sub
         End If
     End If
+End Sub
+
+Private Sub Form_Current()
+    Dim low As Boolean
+    On Error Resume Next
+    low = (Nz(Me!CurrentStock, 0) <= Nz(Me!MinimumStock, 0)) And (Not Me.NewRecord)
+    If low Then
+        Me!lblStockHint.Caption = "وضعیت: کم‌موجودی"
+        Me!lblStockHint.ForeColor = UI_ColorDanger()
+    Else
+        Me!lblStockHint.Caption = "وضعیت: عادی"
+        Me!lblStockHint.ForeColor = UI_ColorAccent()
+    End If
+    Me!lblStockHint.FontName = "Tahoma"
+    On Error GoTo 0
 End Sub
 
 Private Sub btnClose_Click()
