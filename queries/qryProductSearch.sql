@@ -1,10 +1,5 @@
-' Query name: qryProductSearch
-' Purpose: جستجوی کالا بر اساس نام یا کد
-' Uses form controls on frmProductSearch:
-'   Forms!frmProductSearch!txtName
-'   Forms!frmProductSearch!txtCode
-'
-' If a criterion is blank, that filter is ignored.
+' qryProductSearch
+' Form dependency: Forms!frmProductSearch!txtSearch
 
 SELECT
     Products.ID,
@@ -13,18 +8,13 @@ SELECT
     Products.Unit AS [واحد],
     Products.CurrentStock AS [موجودی فعلی],
     Products.MinimumStock AS [حداقل موجودی],
-    Products.IsActive AS [فعال]
+    IIf([CurrentStock]<=[MinimumStock],"نیاز به تأمین","موجود") AS [وضعیت موجودی]
 FROM Products
 WHERE
     (
-        Forms!frmProductSearch!txtName Is Null
-        Or Forms!frmProductSearch!txtName = ""
-        Or Products.ProductName Like "*" & Forms!frmProductSearch!txtName & "*"
-    )
-    AND
-    (
-        Forms!frmProductSearch!txtCode Is Null
-        Or Forms!frmProductSearch!txtCode = ""
-        Or Products.ProductCode Like "*" & Forms!frmProductSearch!txtCode & "*"
+        Forms!frmProductSearch!txtSearch Is Null
+        Or Forms!frmProductSearch!txtSearch = ""
+        Or Products.ProductName Like "*" & Forms!frmProductSearch!txtSearch & "*"
+        Or Products.ProductCode Like "*" & Forms!frmProductSearch!txtSearch & "*"
     )
 ORDER BY Products.ProductName;

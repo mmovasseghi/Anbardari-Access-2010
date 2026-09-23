@@ -1,73 +1,55 @@
-# راهنمای ساخت — Access 2010 (حداقلی)
+# راهنمای ساخت — Access 2010 (اپراتورمحور، سبک)
 
 ## 1) فایل
-
 Blank Database → `database/Inventory.accdb`
 
-## 2) جداول
+## 2) جداول و روابط
+طبق `docs/SCHEMA.md` و `sql/02_relationships.md`
 
-طبق `docs/SCHEMA.md`:
-
-- Products
-- Documents
-- DocumentItems
-
-## 3) روابط
-
-Database Tools → Relationships  
-`Documents.ID` → `DocumentItems.DocumentID` (RI)  
-`Products.ID` → `DocumentItems.ProductID` (RI)
-
-## 4) VBA Modules
-
-Alt+F11 → Insert → Module  
-فقط این سه تا:
-
+## 3) ماژول‌های VBA (فقط ۳ تا)
 1. `modConstants`
 2. `modValidation`
 3. `modStock`
 
-متن را از فایل‌های `vba/` کپی کنید.
+## 4) کوئری‌ها
+از پوشه `queries/` بسازید (نام‌ها دقیق):
 
-## 5) Queries
+- qryStock
+- qryLowStock
+- qryStockView
+- qryProductSearch
+- qryInOut
+- qryProductMovement
 
-SQL فایل‌های `queries/` را در Query SQL View بسازید.
+## 5) فرم‌ها (ترتیب ساخت)
 
-## 6) Forms
+1. `frmDocumentItems` (Datasheet)
+2. `frmDocuments` + Subform
+3. `frmProducts`
+4. `frmProductSearchResults` (Datasheet از qryProductSearch) → داخل `frmProductSearch`
+5. `frmStockResults` (Datasheet از qryStockView) → داخل `frmStockView`
+6. `frmMovementResults` (Datasheet از qryProductMovement) → داخل `frmProductMovement`
+7. `frmInOutReport`
+8. `frmMain`
 
-| فرم | منبع |
-|---|---|
-| frmProducts | Products |
-| frmDocumentItems | DocumentItems (Datasheet) |
-| frmDocuments | Documents + Subform |
-| frmProductSearch | unbound + نتایج |
-| frmMain | unbound منو |
+کد هر فرم را از `vba/*_Code.bas` کپی کنید.
 
-کد هر فرم: `vba/*_Code.bas`
+## 6) گزارش‌ها
+- `rptLowStock` ← qryLowStock
+- `rptInOut` ← qryInOut (Landscape)
+- اختیاری: `rptStock` ← qryStock
 
-Combo نوع تراکنش: `IN;ورود;OUT;خروج` (Column Count=2, Widths=`0cm;3cm`)  
-Combo کالا: `SELECT ID, ProductName, ProductCode FROM Products WHERE IsActive=True ORDER BY ProductName;`
+## 7) Startup
+Display Form = `frmMain`
 
-Subform link: Master `ID` / Child `DocumentID`
+## 8) تست اپراتوری
+1. کالای جدید (موجودی دستی قفل است)
+2. ثبت ورود کالا با چند قلم
+3. ثبت خروج بدون حواله → پیام فارسی
+4. خروج بیش از موجودی → «موجودی فعلی: …»
+5. جستجوی کالا با چند حرف
+6. مشاهده موجودی + فقط کم‌موجودی
+7. گزارش ورود و خروج با فیلتر تاریخ
+8. گردش یک کالا از جستجو
 
-## 7) Reports
-
-از `reports/REPORTS.md`
-
-## 8) Startup
-
-Current Database → Display Form = `frmMain`
-
-## 9) تست سریع
-
-1. ۲ کالا بسازید  
-2. سند ورود + چند قلم  
-3. سند خروج با حواله  
-4. خروج بیش از موجودی → باید خطا بدهد  
-5. خروج بدون حواله → باید خطا بدهد  
-
-## سیستم ضعیف
-
-- Compact & Repair بعد از کار زیاد  
-- همزمان چند فرم سنگین باز نکنید  
-- گزارش‌ها را Preview کنید نه Print فوری روی دیتای خیلی بزرگ  
+جزئیات UX: `docs/OPERATOR_UX.md`

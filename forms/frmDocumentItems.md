@@ -1,9 +1,14 @@
-# frmDocumentItems (سبک / Datasheet)
+# مشخصات frmDocumentItems
 
+Default View: Datasheet  
 Record Source: `DocumentItems`
 
-- `cboProductID` (نمایش نام، ذخیره ID)
-- `Quantity`
-- `DocumentID` مخفی (از Link پر می‌شود)
+| کنترل | عنوان ستون |
+|---|---|
+| `cboProductID` | کالا |
+| `txtQuantity` | تعداد |
+| `txtDocumentID` | مخفی |
+| `txtID` | مخفی |
 
+Combo کالا: نام (+ کد) را نشان می‌دهد، ID ذخیره می‌کند.  
 کد: `vba/frmDocumentItems_Code.bas`

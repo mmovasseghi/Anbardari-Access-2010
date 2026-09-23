@@ -1,5 +1,5 @@
 '------------------------------------------------------------------------------
-' Module: modStock — Access 2010 / DAO only / low overhead
+' modStock — Access 2010 / DAO / سبک
 '------------------------------------------------------------------------------
 Option Compare Database
 Option Explicit
@@ -11,10 +11,10 @@ Public Function ApplyStockChange( _
     ByVal deltaSign As Long _
 ) As Boolean
 
-    Dim db As DAO.Database
     Dim rs As DAO.Recordset
     Dim signedQty As Long
     Dim newStock As Long
+    Dim curStock As Long
 
     ApplyStockChange = False
 
@@ -29,25 +29,24 @@ Public Function ApplyStockChange( _
     ElseIf transactionType = TRANSACTION_OUT Then
         signedQty = -quantity * deltaSign
     Else
-        MsgBox "نوع تراکنش نامعتبر است.", vbExclamation, MSG_TITLE
+        MsgBox ERR_TX_REQUIRED, vbExclamation, MSG_TITLE
         Exit Function
     End If
 
-    Set db = CurrentDb
-    Set rs = db.OpenRecordset("SELECT CurrentStock FROM Products WHERE ID=" & productID, dbOpenDynaset)
-
+    Set rs = CurrentDb.OpenRecordset("SELECT CurrentStock FROM Products WHERE ID=" & productID, dbOpenDynaset)
     If rs.EOF Then
         rs.Close
         Set rs = Nothing
-        MsgBox "کالا یافت نشد.", vbExclamation, MSG_TITLE
+        MsgBox "کالای انتخاب‌شده پیدا نشد.", vbExclamation, MSG_TITLE
         Exit Function
     End If
 
-    newStock = Nz(rs!CurrentStock, 0) + signedQty
+    curStock = Nz(rs!CurrentStock, 0)
+    newStock = curStock + signedQty
     If newStock < 0 Then
         rs.Close
         Set rs = Nothing
-        MsgBox ERR_STOCK_NEGATIVE, vbExclamation, MSG_TITLE
+        MsgBox ERR_STOCK_NEGATIVE & vbCrLf & "موجودی فعلی: " & curStock, vbExclamation, MSG_TITLE
         Exit Function
     End If
 
@@ -56,7 +55,6 @@ Public Function ApplyStockChange( _
     rs.Update
     rs.Close
     Set rs = Nothing
-    Set db = Nothing
 
     ApplyStockChange = True
 End Function
@@ -90,3 +88,9 @@ Public Function DocumentHasItems(ByVal documentID As Long) As Boolean
     rs.Close
     Set rs = Nothing
 End Function
+
+Public Sub GoMainMenu()
+    On Error Resume Next
+    DoCmd.Close acForm, Screen.ActiveForm.Name
+    DoCmd.OpenForm "frmMain"
+End Sub

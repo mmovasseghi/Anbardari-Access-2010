@@ -1,10 +1,11 @@
-# گزارش‌ها (سبک)
+# گزارش‌ها
 
-| گزارش | منبع | عنوان |
+| گزارش | منبع | عنوان فارسی |
 |---|---|---|
-| rptStock | qryStock | گزارش موجودی کالاها |
 | rptLowStock | qryLowStock | گزارش کالاهای کم‌موجودی |
-| rptInOut | qryInOut | گزارش ورود و خروج کالا |
+| rptInOut | qryInOut | گزارش ورود و خروج |
+| rptStock | qryStock | موجودی انبار (اختیاری) |
 
-فونت: Tahoma — راست‌چین  
-`rptInOut` را Landscape بگذارید.
+- فونت Tahoma، راست‌چین  
+- در نوع عملیات فقط «ورود» / «خروج»  
+- rptInOut ترجیحاً Landscape  

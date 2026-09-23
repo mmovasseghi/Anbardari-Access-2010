@@ -1,6 +1,5 @@
 '------------------------------------------------------------------------------
-' frmDocumentItems — Access 2010 — Subform Datasheet
-' Delete stock fix: AfterDelConfirm only
+' frmDocumentItems — اقلام سند (Subform Datasheet) — Access 2010
 '------------------------------------------------------------------------------
 Option Compare Database
 Option Explicit
@@ -14,9 +13,11 @@ Private m_DelTx As String
 
 Private Sub Form_Load()
     Me!cboProductID.RowSourceType = "Table/Query"
-    Me!cboProductID.RowSource = "SELECT ID, ProductName, ProductCode FROM Products WHERE IsActive=True ORDER BY ProductName;"
-    Me!cboProductID.ColumnCount = 3
-    Me!cboProductID.ColumnWidths = "0cm;4cm;2cm"
+    Me!cboProductID.RowSource = _
+        "SELECT ID, ProductName & ' (' & Nz(ProductCode,'') & ')' AS ProductLabel, ProductName, ProductCode " & _
+        "FROM Products WHERE IsActive=True ORDER BY ProductName;"
+    Me!cboProductID.ColumnCount = 4
+    Me!cboProductID.ColumnWidths = "0cm;5cm;0cm;0cm"
     Me!cboProductID.BoundColumn = 1
     Me!cboProductID.LimitToList = True
 End Sub
@@ -34,7 +35,6 @@ End Sub
 
 Private Sub Form_BeforeUpdate(Cancel As Integer)
     Dim parentFrm As Form
-    Dim docID As Long
     Dim tx As String
     Dim productID As Long
     Dim qty As Long
@@ -49,8 +49,7 @@ Private Sub Form_BeforeUpdate(Cancel As Integer)
         Exit Sub
     End If
 
-    docID = parentFrm!ID
-    Me!DocumentID = docID
+    Me!DocumentID = parentFrm!ID
 
     If Not ValidateDocumentHeader(parentFrm!TransactionType, parentFrm!DeliveryNumber) Then
         Cancel = True
@@ -76,7 +75,7 @@ Private Sub Form_BeforeUpdate(Cancel As Integer)
         available = GetProductCurrentStock(productID)
         If m_HadOld And m_OldProductID = productID Then available = available + m_OldQuantity
         If qty > available Then
-            MsgBox ERR_STOCK_NEGATIVE & " (قابل خروج: " & available & ")", vbExclamation, MSG_TITLE
+            MsgBox ERR_STOCK_NEGATIVE & vbCrLf & "موجودی فعلی: " & available, vbExclamation, MSG_TITLE
             Cancel = True
             Exit Sub
         End If
@@ -102,7 +101,7 @@ Private Sub Form_BeforeUpdate(Cancel As Integer)
     End If
     Exit Sub
 EH:
-    MsgBox "خطا: " & Err.Description, vbExclamation, MSG_TITLE
+    MsgBox "ثبت این ردیف انجام نشد. لطفاً کالا و تعداد را بررسی کنید.", vbExclamation, MSG_TITLE
     Cancel = True
 End Sub
 
@@ -110,12 +109,9 @@ Private Sub Form_AfterUpdate()
     m_OldProductID = Nz(Me!ProductID, 0)
     m_OldQuantity = Nz(Me!Quantity, 0)
     m_HadOld = True
-    On Error Resume Next
-    Call Me.Parent.RefreshLocks
 End Sub
 
 Private Sub Form_BeforeDelConfirm(Cancel As Integer, Response As Integer)
-    ' Capture only — do not change stock yet
     m_DelProductID = Nz(Me!ProductID, 0)
     m_DelQty = Nz(Me!Quantity, 0)
     m_DelTx = UCase$(GetDocumentTransactionType(Nz(Me!DocumentID, 0)))
@@ -130,8 +126,6 @@ Private Sub Form_AfterDelConfirm(Status As Integer)
         If m_DelProductID > 0 And m_DelQty > 0 And Len(m_DelTx) > 0 Then
             Call ApplyStockChange(m_DelProductID, m_DelQty, m_DelTx, -1)
         End If
-        On Error Resume Next
-        Call Me.Parent.RefreshLocks
     End If
     m_DelProductID = 0
     m_DelQty = 0

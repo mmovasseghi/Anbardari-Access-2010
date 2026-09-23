@@ -1,11 +1,16 @@
-# چک‌لیست ساخت (حداقلی)
+# چک‌لیست
 
-- [ ] `Inventory.accdb`
-- [ ] جداول Products / Documents / DocumentItems
-- [ ] روابط + RI
-- [ ] `modConstants` / `modValidation` / `modStock`
-- [ ] کوئری‌ها
-- [ ] frmProducts / frmDocumentItems / frmDocuments / frmProductSearch / frmMain
-- [ ] rptStock / rptLowStock / rptInOut
+- [ ] جداول + روابط
+- [ ] ۳ ماژول VBA
+- [ ] ۶ کوئری
+- [ ] frmMain با ۸ دکمه فارسی
+- [ ] frmDocuments (ورود/خروج با OpenArgs)
+- [ ] frmDocumentItems
+- [ ] frmProducts (موجودی Locked)
+- [ ] frmProductSearch
+- [ ] frmStockView
+- [ ] frmInOutReport
+- [ ] frmProductMovement
+- [ ] rptLowStock / rptInOut
 - [ ] Display Form = frmMain
-- [ ] تست ورود / خروج / موجودی منفی / حواله
+- [ ] تست پیام‌های فارسی و جلوگیری از اشتباه

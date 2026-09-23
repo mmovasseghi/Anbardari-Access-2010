@@ -1,24 +1,21 @@
-# مشخصات frmMain (سبک)
+# مشخصات frmMain — منوی اصلی
 
-| ویژگی | مقدار |
+Record Source: خالی  
+Navigation Buttons / Record Selectors: No
+
+| کنترل | متن دکمه |
 |---|---|
-| Record Source | خالی |
-| Caption | سیستم انبارداری |
-| Navigation Buttons | No |
-| Record Selectors | No |
-| Scroll Bars | Neither |
+| `lblBrand` | سیستم انبارداری |
+| `lblSubtitle` | کار با دکمه‌ها — بدون نیاز به دانش فنی |
+| `btnIn` | ثبت ورود کالا |
+| `btnOut` | ثبت خروج / حواله |
+| `btnProducts` | مدیریت کالاها |
+| `btnSearch` | جستجوی کالا |
+| `btnStock` | مشاهده موجودی انبار |
+| `btnInOutReport` | گزارش ورود و خروج |
+| `btnLowStock` | گزارش کالاهای کم‌موجودی |
+| `btnExit` | خروج از برنامه |
 
-کنترل‌ها:
-
-- `lblBrand` → سیستم انبارداری
-- `lblSubtitle` → ورود، خروج و کنترل موجودی
-- `btnDocuments` → ثبت سند انبار
-- `btnProducts` → مدیریت کالاها
-- `btnStockReport` → گزارش موجودی
-- `btnLowStockReport` → گزارش کم‌موجودی
-- `btnInOutReport` → گزارش ورود و خروج
-- `btnProductSearch` → جستجوی کالا
-- `btnExit` → خروج
-
+دکمه‌ها بزرگ و زیر هم/دو ستونه.  
 کد: `vba/frmMain_Code.bas`  
-رنگ‌ها: یک‌بار در Design طبق `docs/UI_DESIGN.md`
+Startup Form = `frmMain`
