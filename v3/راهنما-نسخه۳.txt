@@ -1,0 +1,17 @@
+انباربان نسخه ۳ — اپ ویندوز (64-bit)
+
+۱) نصب .NET Framework 4.8
+۲) نصب Access Database Engine 2010 — نسخه 64-bit (ACE OLEDB)
+۳) ساخت دیتابیس: از پوشه build در ریپو v2 → ساخت-دیتابیس.bat
+۴) کپی Inventory.accdb به Data\Inventory.accdb کنار Anbarban.exe
+۵) ساخت اپ:
+   cd v3
+   dotnet build Anbarban.sln -c Release
+   scripts\Make-Portable.bat
+۶) اجرا: Anbarban.exe
+
+روز اول: فروشنده → بخش → کالا → ورود → خروج
+
+کد مدیر: tools\مولد-کد-مدیر.bat INCOMING 1 "شماره-سند"
+
+بکاپ: فقط Data\Inventory.accdb

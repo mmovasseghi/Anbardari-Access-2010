@@ -19,7 +19,7 @@ namespace Anbarban.Data
 
         public static string BuildConnectionString(string dbPath)
         {
-            // ACE 12.0 — روی Win7 معمولاً ACE 2010 Redistributable (x86) لازم است
+            // ACE 12.0 — نسخه v3: Redistributable 64-bit (هم‌تراز PlatformTarget x64)
             return $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
         }
     }

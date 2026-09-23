@@ -95,7 +95,7 @@ namespace Anbarban.Data
                 if (r.GetInt32(1) == productId && lid != excludeLineId)
                     need += Convert.ToInt32(r.GetValue(2));
             }
-            return need > AppServices.Stock.GetCurrentStock(productId);
+            return need > _stock.GetCurrentStock(productId);
         }
 
         public void AddLine(int docId, int productId, int qty, int deptId)
