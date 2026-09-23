@@ -11,3 +11,4 @@ Desktop.ini
 
 # OS
 .DS_Store
+__pycache__/
