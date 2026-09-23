@@ -35,7 +35,10 @@
       </DataGrid.Columns>
     </DataGrid>
 
-    <Button Grid.Row="3" Style="{StaticResource MenuTileButton}" Content="بازگشت به منو"
-            HorizontalAlignment="Left" Margin="0,16,0,0" Click="OnBack"/>
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0">
+      <Button x:Name="BtnNew" Style="{StaticResource PrimaryActionButton}" Content="کالای جدید" Click="OnNew"/>
+      <Button x:Name="BtnEdit" Style="{StaticResource MenuTileButton}" Content="ویرایش کالای انتخابی" Click="OnEdit"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت به منو" Click="OnBack"/>
+    </StackPanel>
   </Grid>
 </Page>

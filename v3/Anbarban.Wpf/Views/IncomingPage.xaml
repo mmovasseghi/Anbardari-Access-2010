@@ -1,0 +1,51 @@
+<Page x:Class="Anbarban.Views.IncomingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
+  <ScrollViewer Padding="24">
+    <StackPanel MaxWidth="950">
+      <TextBlock Text="ثبت ورود کالا" Style="{StaticResource PageTitle}"/>
+      <TextBlock x:Name="TxtStatus" Style="{StaticResource Subtitle}" Margin="0,4,0,16"/>
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,12,0">
+          <TextBlock Text="شماره سند *" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtDocNo" Height="34" Margin="0,4,0,10"/>
+          <TextBlock Text="شماره فاکتور" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtInvoice" Height="34" Margin="0,4,0,10"/>
+          <TextBlock Text="تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtJalali" Height="34" Margin="0,4,0,10" ToolTip="1404/01/15"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+          <TextBlock Text="فروشنده *" Foreground="{StaticResource BrushMuted}"/>
+          <ComboBox x:Name="CboSupplier" DisplayMemberPath="Name" SelectedValuePath="Id" Height="34" Margin="0,4,0,10"/>
+          <TextBlock Text="توضیحات" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtDesc" Height="70" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,4,0,10"/>
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Orientation="Horizontal" Margin="0,8,0,16">
+        <Button x:Name="BtnSave" Style="{StaticResource MenuTileButton}" Content="ذخیره اطلاعات فاکتور" Click="OnSaveHeader"/>
+        <Button x:Name="BtnUnlock" Style="{StaticResource MenuTileButton}" Content="باز کردن با کد مدیر" Click="OnUnlock" Visibility="Collapsed"/>
+      </StackPanel>
+
+      <TextBlock Text="اقلام فاکتور" FontSize="18" FontWeight="Bold" Foreground="{StaticResource BrushText}" Margin="0,8,0,8"/>
+      <DataGrid x:Name="GridLines" Height="220" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="کالا" Binding="{Binding ProductName}" Width="*"/>
+          <DataGridTextColumn Header="تعداد" Binding="{Binding Quantity}" Width="80"/>
+        </DataGrid.Columns>
+      </DataGrid>
+      <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+        <Button Style="{StaticResource MenuTileButton}" Content="افزودن قلم" Click="OnAddLine"/>
+        <Button Style="{StaticResource MenuTileButton}" Content="حذف قلم انتخابی" Click="OnDelLine"/>
+        <Button Style="{StaticResource PrimaryActionButton}" Content="بررسی و ثبت ورود" Click="OnReview"/>
+      </StackPanel>
+      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت به منو" HorizontalAlignment="Left" Click="OnBack"/>
+    </StackPanel>
+  </ScrollViewer>
+</Page>

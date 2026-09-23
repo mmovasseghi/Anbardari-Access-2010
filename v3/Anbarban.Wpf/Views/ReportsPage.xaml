@@ -1,0 +1,53 @@
+<Page x:Class="Anbarban.Views.ReportsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <TextBlock Text="جستجو و گزارش‌ها" Style="{StaticResource PageTitle}"/>
+    <Grid Grid.Row="1" Margin="0,16,0,12">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <StackPanel>
+        <TextBlock Text="نوع گزارش" Foreground="{StaticResource BrushMuted}"/>
+        <ComboBox x:Name="CboType" Height="32" Margin="0,4,0,8" SelectedIndex="0">
+          <ComboBoxItem Content="ورود و خروج"/>
+          <ComboBoxItem Content="موجودی انبار"/>
+          <ComboBoxItem Content="کم‌موجودی"/>
+          <ComboBoxItem Content="بر اساس فروشنده"/>
+          <ComboBoxItem Content="بر اساس بخش"/>
+          <ComboBoxItem Content="بر اساس حواله"/>
+          <ComboBoxItem Content="گردش یک کالا"/>
+        </ComboBox>
+        <TextBlock Text="از تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
+        <TextBox x:Name="TxtFromJ" Height="32" Margin="0,4,0,8"/>
+        <TextBlock Text="تا تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
+        <TextBox x:Name="TxtToJ" Height="32" Margin="0,4,0,8"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Margin="16,0,0,0">
+        <TextBlock Text="کالا (گردش)" Foreground="{StaticResource BrushMuted}"/>
+        <ComboBox x:Name="CboProduct" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
+        <TextBlock Text="فروشنده" Foreground="{StaticResource BrushMuted}"/>
+        <ComboBox x:Name="CboSupplier" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
+        <TextBlock Text="بخش" Foreground="{StaticResource BrushMuted}"/>
+        <ComboBox x:Name="CboDept" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
+        <TextBlock Text="شماره حواله" Foreground="{StaticResource BrushMuted}"/>
+        <TextBox x:Name="TxtDelivery" Height="32" Margin="0,4,0,8"/>
+      </StackPanel>
+    </Grid>
+    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="True" IsReadOnly="True"
+              Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"/>
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,12,0,0">
+      <Button Style="{StaticResource PrimaryActionButton}" Content="نمایش گزارش" Click="OnRun"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="راهنمای Excel: از منوی Access/اکسل — کپی جدول" Click="OnExcelHint"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت" Click="OnBack"/>
+    </StackPanel>
+  </Grid>
+</Page>

@@ -1,0 +1,46 @@
+<Page x:Class="Anbarban.Views.OutgoingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
+  <ScrollViewer Padding="24">
+    <StackPanel MaxWidth="950">
+      <TextBlock Text="ثبت خروج / حواله" Style="{StaticResource PageTitle}"/>
+      <TextBlock x:Name="TxtStatus" Style="{StaticResource Subtitle}" Margin="0,4,0,16"/>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,12,0">
+          <TextBlock Text="شماره سند *" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtDocNo" Height="34" Margin="0,4,0,10"/>
+          <TextBlock Text="شماره حواله *" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtDelivery" Height="34" Margin="0,4,0,10"/>
+          <TextBlock Text="تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtJalali" Height="34" Margin="0,4,0,10"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+          <TextBlock Text="توضیحات" Foreground="{StaticResource BrushMuted}"/>
+          <TextBox x:Name="TxtDesc" Height="100" TextWrapping="Wrap" Margin="0,4,0,10"/>
+        </StackPanel>
+      </Grid>
+      <StackPanel Orientation="Horizontal" Margin="0,8,0,16">
+        <Button x:Name="BtnSave" Style="{StaticResource MenuTileButton}" Content="ذخیره حواله" Click="OnSaveHeader"/>
+        <Button x:Name="BtnUnlock" Style="{StaticResource MenuTileButton}" Content="باز کردن با کد مدیر" Click="OnUnlock" Visibility="Collapsed"/>
+      </StackPanel>
+      <DataGrid x:Name="GridLines" Height="220" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="کالا" Binding="{Binding ProductName}" Width="*"/>
+          <DataGridTextColumn Header="تعداد" Binding="{Binding Quantity}" Width="70"/>
+          <DataGridTextColumn Header="بخش" Binding="{Binding DepartmentName}" Width="140"/>
+        </DataGrid.Columns>
+      </DataGrid>
+      <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+        <Button Style="{StaticResource MenuTileButton}" Content="افزودن قلم" Click="OnAddLine"/>
+        <Button Style="{StaticResource MenuTileButton}" Content="حذف قلم" Click="OnDelLine"/>
+        <Button Style="{StaticResource PrimaryActionButton}" Content="بررسی و ثبت خروج" Click="OnReview"/>
+      </StackPanel>
+      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت به منو" Click="OnBack"/>
+    </StackPanel>
+  </ScrollViewer>
+</Page>

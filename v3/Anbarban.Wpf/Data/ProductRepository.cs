@@ -52,5 +52,24 @@ namespace Anbarban.Data
             }
             return list;
         }
+
+        public void Save(int id, string name, string code, string unit, int minimum, bool active)
+        {
+            using var conn = _db.Open();
+            if (id <= 0)
+            {
+                OleDbUtil.ExecuteNonQuery(conn, null,
+                    "INSERT INTO Products (ProductName, ProductCode, Unit, CurrentStock, MinimumStock, IsActive) VALUES (?,?,?,0,?,?)",
+                    OleDbUtil.P("@n", name), OleDbUtil.P("@c", code), OleDbUtil.P("@u", unit),
+                    OleDbUtil.P("@m", minimum), OleDbUtil.P("@a", active));
+            }
+            else
+            {
+                OleDbUtil.ExecuteNonQuery(conn, null,
+                    "UPDATE Products SET ProductName=?, ProductCode=?, Unit=?, MinimumStock=?, IsActive=? WHERE ID=?",
+                    OleDbUtil.P("@n", name), OleDbUtil.P("@c", code), OleDbUtil.P("@u", unit),
+                    OleDbUtil.P("@m", minimum), OleDbUtil.P("@a", active), OleDbUtil.P("@id", id));
+            }
+        }
     }
 }

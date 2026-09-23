@@ -1,9 +1,9 @@
 # انباربان — سیستم انبار
 
-### نسخه ۳ (در حال ساخت)
+### نسخه ۳ — اپ ویندوزی (WPF x64)
 
-اپ **ویندوزی WPF** جدا + همان `Inventory.accdb` — بدون فرم Access.  
-شروع کار: [`v3/README.md`](v3/README.md) | نقشه راه: [`docs/V3_ROADMAP.md`](docs/V3_ROADMAP.md)
+`Anbarban.exe` + `Data\Inventory.accdb` — **بدون فرم Access**.  
+[`v3/README.md`](v3/README.md) | [`release/RELEASE_NOTES_v3.0.md`](release/RELEASE_NOTES_v3.0.md)
 
 ---
 

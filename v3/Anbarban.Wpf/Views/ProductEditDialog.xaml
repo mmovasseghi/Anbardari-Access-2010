@@ -1,0 +1,20 @@
+<Window x:Class="Anbarban.Views.ProductEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="کالا" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
+        Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
+  <StackPanel Margin="20" MinWidth="360">
+    <TextBlock Text="نام کالا *" Foreground="{StaticResource BrushMuted}"/>
+    <TextBox x:Name="TxtName" Height="32" Margin="0,4,0,10"/>
+    <TextBlock Text="کد" Foreground="{StaticResource BrushMuted}"/>
+    <TextBox x:Name="TxtCode" Height="32" Margin="0,4,0,10"/>
+    <TextBlock Text="واحد" Foreground="{StaticResource BrushMuted}"/>
+    <TextBox x:Name="TxtUnit" Height="32" Margin="0,4,0,10"/>
+    <TextBlock Text="حداقل موجودی" Foreground="{StaticResource BrushMuted}"/>
+    <TextBox x:Name="TxtMin" Height="32" Margin="0,4,0,16"/>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+      <Button Style="{StaticResource MenuTileButton}" Content="انصراف" Width="100" Margin="6" IsCancel="True"/>
+      <Button Style="{StaticResource PrimaryActionButton}" Content="ذخیره" Width="100" Margin="6" IsDefault="True" Click="OnSave"/>
+    </StackPanel>
+  </StackPanel>
+</Window>

@@ -7,17 +7,14 @@ namespace Anbarban.Views
     {
         public HomePage() => InitializeComponent();
 
-        private MainWindow? Shell => Window.GetWindow(this) as MainWindow;
-
-        private void OnIncoming() => Shell?.NavigateTo(new PlaceholderPage("ثبت ورود کالا", "صفحه ورود دو مرحله‌ای — در حال پیاده‌سازی v3"));
-        private void OnOutgoing() => Shell?.NavigateTo(new PlaceholderPage("ثبت خروج / حواله", "صفحه خروج دو مرحله‌ای — در حال پیاده‌سازی v3"));
-        private void OnProducts() => Shell?.NavigateTo(new ProductsPage());
-        private void OnSuppliers() => Shell?.NavigateTo(new PlaceholderPage("فروشندگان", "به‌زودی"));
-        private void OnDepartments() => Shell?.NavigateTo(new PlaceholderPage("بخش‌ها", "به‌زودی"));
-        private void OnReports() => Shell?.NavigateTo(new PlaceholderPage("گزارش‌ها", "به‌زودی"));
-        private void OnStock() => Shell?.NavigateTo(new ProductsPage());
-        private void OnLowStock() => Shell?.NavigateTo(new ProductsPage(lowStockOnly: true));
-
+        private void OnIncoming() => Navigation.Go(this, new IncomingPage());
+        private void OnOutgoing() => Navigation.Go(this, new OutgoingPage());
+        private void OnProducts() => Navigation.Go(this, new ProductsPage());
+        private void OnSuppliers() => Navigation.Go(this, new SuppliersPage());
+        private void OnDepartments() => Navigation.Go(this, new DepartmentsPage());
+        private void OnReports() => Navigation.Go(this, new ReportsPage());
+        private void OnStock() => Navigation.Go(this, new ProductsPage(lowStockOnly: false, stockMode: true));
+        private void OnLowStock() => Navigation.Go(this, new ProductsPage(lowStockOnly: true, stockMode: true));
         private void OnExit() => Application.Current.Shutdown();
     }
 }

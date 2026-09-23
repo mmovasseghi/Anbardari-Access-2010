@@ -1,0 +1,30 @@
+<Page x:Class="Anbarban.Views.DepartmentsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <TextBlock Text="مدیریت بخش‌ها" Style="{StaticResource PageTitle}"/>
+    <DataGrid x:Name="Grid" Grid.Row="1" Margin="0,16,0,8" AutoGenerateColumns="False" IsReadOnly="True" SelectionChanged="OnSelect">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="نام بخش" Binding="{Binding Name}" Width="*"/>
+        <DataGridCheckBoxColumn Header="فعال" Binding="{Binding Active}" Width="60"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <StackPanel Grid.Row="2">
+      <TextBlock Text="نام بخش" Foreground="{StaticResource BrushMuted}"/>
+      <TextBox x:Name="TxtName" Height="32" Width="400" HorizontalAlignment="Right" Margin="0,4,0,8"/>
+      <CheckBox x:Name="ChkActive" Content="فعال" Foreground="{StaticResource BrushText}" IsChecked="True"/>
+    </StackPanel>
+    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,12,0,0">
+      <Button Style="{StaticResource MenuTileButton}" Content="جدید" Click="OnNew"/>
+      <Button Style="{StaticResource PrimaryActionButton}" Content="ذخیره" Click="OnSave"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت" Click="OnBack"/>
+    </StackPanel>
+  </Grid>
+</Page>
