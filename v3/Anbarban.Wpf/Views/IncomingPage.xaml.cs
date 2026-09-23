@@ -58,7 +58,7 @@ namespace Anbarban.Views
             BtnSave.IsEnabled = !ro;
         }
 
-        private void OnSaveHeader()
+        private void OnSaveHeader(object sender, RoutedEventArgs e)
         {
             if (_posted) return;
             if (string.IsNullOrWhiteSpace(TxtDocNo.Text))
@@ -91,7 +91,7 @@ namespace Anbarban.Views
             catch (Exception ex) { MessageBox.Show(ex.Message, "انباربان"); }
         }
 
-        private void OnAddLine()
+        private void OnAddLine(object sender, RoutedEventArgs e)
         {
             if (_docId <= 0) { MessageBox.Show("ابتدا اطلاعات فاکتور را ذخیره کنید.", "انباربان"); return; }
             if (_posted) return;
@@ -102,14 +102,14 @@ namespace Anbarban.Views
             GridLines.ItemsSource = AppServices.Incoming.GetLines(_docId);
         }
 
-        private void OnDelLine()
+        private void OnDelLine(object sender, RoutedEventArgs e)
         {
-            if (_posted || GridLines.SelectedItem is not IncomingLine line) return;
+            if (_posted || !(GridLines.SelectedItem is IncomingLine line)) return;
             AppServices.Incoming.DeleteLine(line.Id);
             GridLines.ItemsSource = AppServices.Incoming.GetLines(_docId);
         }
 
-        private void OnReview()
+        private void OnReview(object sender, RoutedEventArgs e)
         {
             if (_docId <= 0) return;
             var lines = AppServices.Incoming.GetLines(_docId);
@@ -123,7 +123,7 @@ namespace Anbarban.Views
             if (w.Posted) LoadDoc();
         }
 
-        private void OnUnlock()
+        private void OnUnlock(object sender, RoutedEventArgs e)
         {
             var h = AppServices.Incoming.Get(_docId);
             if (h == null || !h.IsPosted) return;
@@ -136,6 +136,6 @@ namespace Anbarban.Views
             else MessageBox.Show("کد معتبر نیست یا قبلاً استفاده شده.", "انباربان");
         }
 
-        private void OnBack() => Navigation.GoHome(this);
+        private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);
     }
 }

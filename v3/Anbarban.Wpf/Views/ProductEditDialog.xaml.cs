@@ -21,7 +21,7 @@ namespace Anbarban.Views
             TxtMin.Text = min.ToString();
         }
 
-        private void OnSave()
+        private void OnSave(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {

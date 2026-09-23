@@ -55,7 +55,7 @@ namespace Anbarban.Services
                 if (items.Count == 0) return "حداقل یک قلم کالا وارد کنید.";
                 var totals = new Dictionary<int, int>();
                 foreach (var (pid, qty, _) in items)
-                    totals[pid] = totals.GetValueOrDefault(pid) + qty;
+                    totals[pid] = (totals.ContainsKey(pid) ? totals[pid] : 0) + qty;
                 foreach (var kv in totals)
                 {
                     var avail = _stock.GetCurrentStock(kv.Key, conn, tx);

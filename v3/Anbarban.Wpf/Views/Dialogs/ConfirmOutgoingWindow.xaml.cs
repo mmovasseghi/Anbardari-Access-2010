@@ -28,9 +28,9 @@ namespace Anbarban.Views.Dialogs
             }).ToList();
         }
 
-        private void OnBack() => Close();
+        private void OnBack(object sender, RoutedEventArgs e) => Close();
 
-        private void OnConfirm()
+        private void OnConfirm(object sender, RoutedEventArgs e)
         {
             var err = AppServices.Post.PostOutgoing(_docId);
             if (err != null)

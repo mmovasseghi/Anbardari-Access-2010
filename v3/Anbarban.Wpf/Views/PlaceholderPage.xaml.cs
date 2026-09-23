@@ -12,7 +12,7 @@ namespace Anbarban.Views
             TxtBody.Text = body;
         }
 
-        private void OnBack()
+        private void OnBack(object sender, RoutedEventArgs e)
         {
             if (Window.GetWindow(this) is MainWindow w)
                 w.NavigateTo(new HomePage());

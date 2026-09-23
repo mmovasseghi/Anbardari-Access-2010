@@ -16,6 +16,7 @@
     <Description>انباربان — اپ ویندوز با پایگاه Access</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />

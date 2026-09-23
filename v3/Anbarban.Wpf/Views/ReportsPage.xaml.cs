@@ -27,7 +27,7 @@ namespace Anbarban.Views
             return (f, t);
         }
 
-        private void OnRun()
+        private void OnRun(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -62,9 +62,9 @@ namespace Anbarban.Views
             catch (Exception ex) { MessageBox.Show(ex.Message, "انباربان"); }
         }
 
-        private void OnExcelHint() =>
+        private void OnExcelHint(object sender, RoutedEventArgs e) =>
             MessageBox.Show("ردیف‌های جدول را انتخاب کنید → Ctrl+C → در Excel Paste کنید.", "انباربان");
 
-        private void OnBack() => Navigation.GoHome(this);
+        private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);
     }
 }

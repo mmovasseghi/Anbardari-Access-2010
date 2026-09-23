@@ -38,15 +38,18 @@ namespace Anbarban.Views.Dialogs
             CboProduct.ItemsSource = products.Select(p => new IdName { Id = p.Id, Name = p.Name }).ToList();
         }
 
-        private void OnCancel() => Close();
+        private void OnCancel(object sender, RoutedEventArgs e) => Close();
 
-        private void OnOk()
+        private void OnOk(object sender, RoutedEventArgs e)
         {
-            if (CboProduct.SelectedValue is int pid) ProductId = pid;
-            else if (!int.TryParse(CboProduct.SelectedValue?.ToString(), out ProductId) || ProductId <= 0)
+            var pVal = CboProduct.SelectedValue;
+            if (pVal is int pid) ProductId = pid;
+            else if (pVal == null || !int.TryParse(pVal.ToString(), out var parsedPid) || parsedPid <= 0)
             {
                 MessageBox.Show("کالا را انتخاب کنید.", "انباربان"); return;
             }
+            else ProductId = parsedPid;
+
             if (!int.TryParse(TxtQty.Text, out var q) || q <= 0)
             {
                 MessageBox.Show("تعداد باید بیشتر از صفر باشد.", "انباربان"); return;
@@ -54,11 +57,13 @@ namespace Anbarban.Views.Dialogs
             Quantity = q;
             if (DeptPanel.Visibility == Visibility.Visible)
             {
-                if (CboDept.SelectedValue is int d) DepartmentId = d;
-                else if (!int.TryParse(CboDept.SelectedValue?.ToString(), out DepartmentId) || DepartmentId <= 0)
+                var dVal = CboDept.SelectedValue;
+                if (dVal is int d) DepartmentId = d;
+                else if (dVal == null || !int.TryParse(dVal.ToString(), out var parsedDept) || parsedDept <= 0)
                 {
                     MessageBox.Show("بخش را انتخاب کنید.", "انباربان"); return;
                 }
+                else DepartmentId = parsedDept;
             }
             Ok = true;
             Close();

@@ -38,18 +38,18 @@ namespace Anbarban.Views
             catch (Exception ex) { MessageBox.Show(ex.Message, "انباربان"); }
         }
 
-        private void OnSearch() => LoadData();
+        private void OnSearch(object sender, RoutedEventArgs e) => LoadData();
 
-        private void OnNew()
+        private void OnNew(object sender, RoutedEventArgs e)
         {
             if (_stockMode) return;
             var dlg = new ProductEditDialog(0, "", "", "عدد", 0) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) ReloadAfterSave(dlg);
         }
 
-        private void OnEdit()
+        private void OnEdit(object sender, RoutedEventArgs e)
         {
-            if (_stockMode || Grid.SelectedItem is not ProductRow row) return;
+            if (_stockMode || !(Grid.SelectedItem is ProductRow row)) return;
             var dlg = new ProductEditDialog(row.Id, row.Name, row.Code, row.Unit, row.MinimumStock) { Owner = Window.GetWindow(this) };
             if (dlg.ShowDialog() == true) ReloadAfterSave(dlg);
         }
@@ -60,6 +60,6 @@ namespace Anbarban.Views
             LoadData();
         }
 
-        private void OnBack() => Navigation.GoHome(this);
+        private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);
     }
 }

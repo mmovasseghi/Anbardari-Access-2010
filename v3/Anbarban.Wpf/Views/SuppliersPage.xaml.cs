@@ -31,14 +31,14 @@ namespace Anbarban.Views
             ChkActive.IsChecked = s.Active;
         }
 
-        private void OnNew()
+        private void OnNew(object sender, RoutedEventArgs e)
         {
             _id = 0;
             TxtName.Text = TxtInfo.Text = "";
             ChkActive.IsChecked = true;
         }
 
-        private void OnSave()
+        private void OnSave(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
@@ -49,7 +49,7 @@ namespace Anbarban.Views
             MessageBox.Show("ذخیره شد.", "انباربان");
         }
 
-        private void OnBack() => Navigation.GoHome(this);
+        private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);
 
         private sealed class SupplierVm
         {

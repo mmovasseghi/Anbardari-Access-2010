@@ -43,7 +43,7 @@ namespace Anbarban.Views
             GridLines.ItemsSource = AppServices.Outgoing.GetLines(_docId);
         }
 
-        private void OnSaveHeader()
+        private void OnSaveHeader(object sender, RoutedEventArgs e)
         {
             if (_posted) return;
             if (string.IsNullOrWhiteSpace(TxtDocNo.Text) || string.IsNullOrWhiteSpace(TxtDelivery.Text))
@@ -66,7 +66,7 @@ namespace Anbarban.Views
             MessageBox.Show("حواله ذخیره شد.", "انباربان");
         }
 
-        private void OnAddLine()
+        private void OnAddLine(object sender, RoutedEventArgs e)
         {
             if (_docId <= 0) { MessageBox.Show("ابتدا حواله را ذخیره کنید.", "انباربان"); return; }
             if (_posted) return;
@@ -82,14 +82,14 @@ namespace Anbarban.Views
             GridLines.ItemsSource = AppServices.Outgoing.GetLines(_docId);
         }
 
-        private void OnDelLine()
+        private void OnDelLine(object sender, RoutedEventArgs e)
         {
-            if (_posted || GridLines.SelectedItem is not OutgoingLine line) return;
+            if (_posted || !(GridLines.SelectedItem is OutgoingLine line)) return;
             AppServices.Outgoing.DeleteLine(line.Id);
             GridLines.ItemsSource = AppServices.Outgoing.GetLines(_docId);
         }
 
-        private void OnReview()
+        private void OnReview(object sender, RoutedEventArgs e)
         {
             var lines = AppServices.Outgoing.GetLines(_docId);
             if (lines.Count == 0) { MessageBox.Show("حداقل یک قلم وارد کنید.", "انباربان"); return; }
@@ -99,7 +99,7 @@ namespace Anbarban.Views
             if (w.Posted) LoadDoc();
         }
 
-        private void OnUnlock()
+        private void OnUnlock(object sender, RoutedEventArgs e)
         {
             var h = AppServices.Outgoing.Get(_docId);
             if (h == null || !h.IsPosted) return;
@@ -112,6 +112,6 @@ namespace Anbarban.Views
             else MessageBox.Show("کد نامعتبر است.", "انباربان");
         }
 
-        private void OnBack() => Navigation.GoHome(this);
+        private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);
     }
 }

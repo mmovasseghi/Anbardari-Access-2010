@@ -20,9 +20,9 @@ namespace Anbarban.Views.Dialogs
             Grid.ItemsSource = lines;
         }
 
-        private void OnBack() => Close();
+        private void OnBack(object sender, RoutedEventArgs e) => Close();
 
-        private void OnConfirm()
+        private void OnConfirm(object sender, RoutedEventArgs e)
         {
             var err = AppServices.Post.PostIncoming(_docId);
             if (err != null)
