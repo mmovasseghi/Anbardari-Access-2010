@@ -1,0 +1,104 @@
+'------------------------------------------------------------------------------
+' modPost — ثبت نهایی اسناد و کنترل موجودی دسته‌ای
+'------------------------------------------------------------------------------
+Option Compare Database
+Option Explicit
+
+Public Function PostIncomingDocument(ByVal documentID As Long) As Boolean
+    Dim rs As DAO.Recordset
+    PostIncomingDocument = False
+    If documentID <= 0 Then Exit Function
+    If Not DocumentHasIncomingItems(documentID) Then
+        MsgBox ERR_ITEMS_REQUIRED, vbExclamation, MSG_TITLE
+        Exit Function
+    End If
+
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ProductID, Quantity FROM IncomingItems WHERE IncomingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        If Not ApplyStockChange(CLng(rs!ProductID), CLng(rs!Quantity), TRANSACTION_IN, 1) Then
+            rs.Close
+            Set rs = Nothing
+            MsgBox "ثبت نهایی انجام نشد. کالا یا تعداد را بررسی کنید.", vbExclamation, MSG_TITLE
+            Exit Function
+        End If
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+
+    CurrentDb.Execute _
+        "UPDATE IncomingDocuments SET IsPosted=True, PostedAt=Now() WHERE ID=" & documentID, dbFailOnError
+    PostIncomingDocument = True
+End Function
+
+Public Function PostOutgoingDocument(ByVal documentID As Long) As Boolean
+    Dim rs As DAO.Recordset
+    Dim pid As Long
+    Dim qty As Long
+    Dim avail As Long
+
+    PostOutgoingDocument = False
+    If documentID <= 0 Then Exit Function
+    If Not DocumentHasOutgoingItems(documentID) Then
+        MsgBox ERR_ITEMS_REQUIRED, vbExclamation, MSG_TITLE
+        Exit Function
+    End If
+
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ProductID, Quantity FROM OutgoingItems WHERE OutgoingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        pid = CLng(rs!ProductID)
+        qty = CLng(rs!Quantity)
+        avail = GetProductCurrentStock(pid)
+        If qty > avail Then
+            rs.Close
+            Set rs = Nothing
+            MsgBox ERR_STOCK_NEGATIVE & vbCrLf & "موجودی فعلی: " & avail & vbCrLf & "تعداد درخواستی: " & qty, vbExclamation, MSG_TITLE
+            Exit Function
+        End If
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ProductID, Quantity FROM OutgoingItems WHERE OutgoingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        If Not ApplyStockChange(CLng(rs!ProductID), CLng(rs!Quantity), TRANSACTION_OUT, 1) Then
+            rs.Close
+            Set rs = Nothing
+            Exit Function
+        End If
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+
+    CurrentDb.Execute _
+        "UPDATE OutgoingDocuments SET IsPosted=True, PostedAt=Now() WHERE ID=" & documentID, dbFailOnError
+    PostOutgoingDocument = True
+End Function
+
+Public Function OutgoingLineWouldExceedStock(ByVal documentID As Long, ByVal productID As Long, ByVal newQty As Long, _
+    ByVal currentItemID As Long) As Boolean
+
+    Dim rs As DAO.Recordset
+    Dim need As Long
+    Dim avail As Long
+
+    need = newQty
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ID, ProductID, Quantity FROM OutgoingItems WHERE OutgoingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        If CLng(rs!ProductID) = productID And CLng(rs!ID) <> currentItemID Then
+            need = need + CLng(rs!Quantity)
+        End If
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+
+    avail = GetProductCurrentStock(productID)
+    OutgoingLineWouldExceedStock = (need > avail)
+End Function

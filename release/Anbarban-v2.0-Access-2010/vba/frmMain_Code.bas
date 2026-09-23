@@ -1,0 +1,45 @@
+'------------------------------------------------------------------------------
+' frmMain — منوی اصلی انباربان
+'------------------------------------------------------------------------------
+Option Compare Database
+Option Explicit
+
+Private Sub Form_Load()
+    Me.Caption = MSG_TITLE
+End Sub
+
+Private Sub btnIn_Click()
+    DoCmd.OpenForm "frmIncoming", , , , acFormAdd
+End Sub
+
+Private Sub btnOut_Click()
+    DoCmd.OpenForm "frmOutgoing", , , , acFormAdd
+End Sub
+
+Private Sub btnProducts_Click()
+    DoCmd.OpenForm "frmProducts"
+End Sub
+
+Private Sub btnSuppliers_Click()
+    DoCmd.OpenForm "frmSuppliers"
+End Sub
+
+Private Sub btnDepartments_Click()
+    DoCmd.OpenForm "frmDepartments"
+End Sub
+
+Private Sub btnReports_Click()
+    DoCmd.OpenForm "frmReports"
+End Sub
+
+Private Sub btnStock_Click()
+    DoCmd.OpenForm "frmStockView"
+End Sub
+
+Private Sub btnLowStock_Click()
+    DoCmd.OpenReport "rptLowStock", acViewPreview
+End Sub
+
+Private Sub btnExit_Click()
+    DoCmd.Quit acQuitSaveAll
+End Sub

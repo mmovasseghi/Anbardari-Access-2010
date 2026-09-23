@@ -1,0 +1,61 @@
+'------------------------------------------------------------------------------
+' modProductCombo — جستجوی هوشمند نام کالا در کمبوباکس
+'------------------------------------------------------------------------------
+Option Compare Database
+Option Explicit
+
+Public Sub SetupProductSearchCombo(ByVal cbo As ComboBox)
+    On Error Resume Next
+    cbo.RowSourceType = "Table/Query"
+    cbo.RowSource = ProductComboSql("")
+    cbo.ColumnCount = 2
+    cbo.ColumnWidths = "0cm;6cm"
+    cbo.BoundColumn = 1
+    cbo.LimitToList = False
+    cbo.AutoExpand = True
+End Sub
+
+Public Sub RefreshProductComboSearch(ByVal cbo As ComboBox)
+    Dim t As String
+    On Error Resume Next
+    t = Nz(cbo.Text, "")
+    cbo.RowSource = ProductComboSql(t)
+End Sub
+
+Public Function ProductComboSql(ByVal searchText As String) As String
+    Dim s As String
+    s = Trim$(searchText)
+    If Len(s) = 0 Then
+        ProductComboSql = _
+            "SELECT ID, ProductName FROM Products WHERE IsActive=True ORDER BY ProductName;"
+    Else
+        ProductComboSql = _
+            "SELECT ID, ProductName FROM Products WHERE IsActive=True AND " & _
+            "(ProductName Like '*" & SqlSafe(s) & "*' OR ProductCode Like '*" & SqlSafe(s) & "*') " & _
+            "ORDER BY ProductName;"
+    End If
+End Function
+
+Public Function SqlSafe(ByVal s As String) As String
+    SqlSafe = Replace$(s, "'", "''")
+End Function
+
+Public Sub SetupDepartmentCombo(ByVal cbo As ComboBox)
+    On Error Resume Next
+    cbo.RowSourceType = "Table/Query"
+    cbo.RowSource = "SELECT ID, DepartmentName FROM Departments WHERE IsActive=True ORDER BY DepartmentName;"
+    cbo.ColumnCount = 2
+    cbo.ColumnWidths = "0cm;5cm"
+    cbo.BoundColumn = 1
+    cbo.LimitToList = True
+End Sub
+
+Public Sub SetupSupplierCombo(ByVal cbo As ComboBox)
+    On Error Resume Next
+    cbo.RowSourceType = "Table/Query"
+    cbo.RowSource = "SELECT ID, SupplierName FROM Suppliers WHERE IsActive=True ORDER BY SupplierName;"
+    cbo.ColumnCount = 2
+    cbo.ColumnWidths = "0cm;5cm"
+    cbo.BoundColumn = 1
+    cbo.LimitToList = True
+End Sub
