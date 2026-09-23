@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Access 2010 inventory logic simulator / test suite.
-Mirrors VBA rules in modStock / modValidation / form events.
+Anbarban logic tests — two-phase posting, suppliers, departments.
 Run: python3 tests/test_stock_logic.py
 """
 from __future__ import annotations
@@ -11,234 +10,124 @@ from typing import Dict, List, Optional
 import unittest
 
 
-TRANSACTION_IN = "IN"
-TRANSACTION_OUT = "OUT"
-
-
 @dataclass
 class Product:
     id: int
     name: str
-    code: str
-    unit: str
     current_stock: int
-    minimum_stock: int
-    is_active: bool = True
+    minimum_stock: int = 0
 
 
 @dataclass
-class Document:
+class IncomingDoc:
     id: int
-    document_number: str
-    delivery_number: Optional[str]
-    transaction_type: str
-    items: List["DocumentItem"] = field(default_factory=list)
+    items: List[tuple] = field(default_factory=list)  # (product_id, qty)
+    is_posted: bool = False
 
 
 @dataclass
-class DocumentItem:
+class OutgoingDoc:
     id: int
-    document_id: int
-    product_id: int
-    quantity: int
+    items: List[tuple] = field(default_factory=list)  # (product_id, qty, dept_id)
+    is_posted: bool = False
 
 
-class InventoryApp:
+class AnbarbanApp:
     def __init__(self) -> None:
         self.products: Dict[int, Product] = {}
-        self.documents: Dict[int, Document] = {}
-        self._next_product = 1
-        self._next_doc = 1
-        self._next_item = 1
-        self.errors: List[str] = []
+        self.incoming: Dict[int, IncomingDoc] = {}
+        self.outgoing: Dict[int, OutgoingDoc] = {}
+        self._next_p = 1
+        self._next_in = 1
+        self._next_out = 1
 
-    def clear_errors(self) -> None:
-        self.errors.clear()
-
-    def add_product(self, name: str, code: str, unit: str = "عدد", stock: int = 0, minimum: int = 0) -> Product:
-        p = Product(self._next_product, name, code, unit, stock, minimum, True)
+    def add_product(self, name: str, stock: int = 0, minimum: int = 0) -> Product:
+        p = Product(self._next_p, name, stock, minimum)
         self.products[p.id] = p
-        self._next_product += 1
+        self._next_p += 1
         return p
 
-    def create_document(self, number: str, tx: str, delivery: Optional[str] = None) -> Document:
-        if tx not in (TRANSACTION_IN, TRANSACTION_OUT):
-            raise ValueError("invalid tx")
-        if tx == TRANSACTION_OUT and (delivery is None or str(delivery).strip() == ""):
-            raise ValueError("delivery required")
-        d = Document(self._next_doc, number, delivery, tx)
-        self.documents[d.id] = d
-        self._next_doc += 1
+    def draft_incoming(self) -> IncomingDoc:
+        d = IncomingDoc(self._next_in)
+        self.incoming[d.id] = d
+        self._next_in += 1
         return d
 
-    def validate_header(self, tx: Optional[str], delivery: Optional[str]) -> bool:
-        self.clear_errors()
-        if not tx:
-            self.errors.append("tx required")
+    def add_incoming_item(self, doc_id: int, product_id: int, qty: int) -> None:
+        doc = self.incoming[doc_id]
+        assert not doc.is_posted
+        assert qty > 0
+        doc.items.append((product_id, qty))
+
+    def post_incoming(self, doc_id: int) -> bool:
+        doc = self.incoming[doc_id]
+        if doc.is_posted or not doc.items:
             return False
-        if tx not in (TRANSACTION_IN, TRANSACTION_OUT):
-            self.errors.append("tx invalid")
-            return False
-        if tx == TRANSACTION_OUT and (delivery is None or str(delivery).strip() == ""):
-            self.errors.append("delivery required")
-            return False
+        for pid, qty in doc.items:
+            self.products[pid].current_stock += qty
+        doc.is_posted = True
         return True
 
-    def apply_stock_change(self, product_id: int, quantity: int, tx: str, delta_sign: int) -> bool:
-        self.clear_errors()
-        if product_id <= 0:
-            self.errors.append("product required")
+    def draft_outgoing(self) -> OutgoingDoc:
+        d = OutgoingDoc(self._next_out)
+        self.outgoing[d.id] = d
+        self._next_out += 1
+        return d
+
+    def add_outgoing_item(self, doc_id: int, product_id: int, qty: int, dept: int = 1) -> bool:
+        doc = self.outgoing[doc_id]
+        if doc.is_posted or qty <= 0:
             return False
-        if quantity <= 0:
-            self.errors.append("qty must be > 0")
+        need = qty + sum(q for p, q, _ in doc.items if p == product_id)
+        if need > self.products[product_id].current_stock:
             return False
-        if product_id not in self.products:
-            self.errors.append("product not found")
-            return False
-        tx = tx.upper().strip()
-        if tx == TRANSACTION_IN:
-            signed = quantity * delta_sign
-        elif tx == TRANSACTION_OUT:
-            signed = -quantity * delta_sign
-        else:
-            self.errors.append("tx invalid")
-            return False
-        new_stock = self.products[product_id].current_stock + signed
-        if new_stock < 0:
-            self.errors.append("stock negative")
-            return False
-        self.products[product_id].current_stock = new_stock
+        doc.items.append((product_id, qty, dept))
         return True
 
-    def add_item(self, doc_id: int, product_id: int, quantity: int) -> Optional[DocumentItem]:
-        doc = self.documents[doc_id]
-        if not self.validate_header(doc.transaction_type, doc.delivery_number):
-            return None
-        if quantity <= 0:
-            self.errors.append("qty must be > 0")
-            return None
-        if not self.apply_stock_change(product_id, quantity, doc.transaction_type, 1):
-            return None
-        item = DocumentItem(self._next_item, doc_id, product_id, quantity)
-        self._next_item += 1
-        doc.items.append(item)
-        return item
-
-    def edit_item(self, doc_id: int, item_id: int, product_id: int, quantity: int) -> bool:
-        doc = self.documents[doc_id]
-        item = next(i for i in doc.items if i.id == item_id)
-        # reverse old
-        if not self.apply_stock_change(item.product_id, item.quantity, doc.transaction_type, -1):
+    def post_outgoing(self, doc_id: int) -> bool:
+        doc = self.outgoing[doc_id]
+        if doc.is_posted or not doc.items:
             return False
-        if not self.apply_stock_change(product_id, quantity, doc.transaction_type, 1):
-            # restore
-            self.apply_stock_change(item.product_id, item.quantity, doc.transaction_type, 1)
-            return False
-        item.product_id = product_id
-        item.quantity = quantity
+        totals: Dict[int, int] = {}
+        for pid, qty, _ in doc.items:
+            totals[pid] = totals.get(pid, 0) + qty
+        for pid, need in totals.items():
+            if self.products[pid].current_stock < need:
+                return False
+        for pid, need in totals.items():
+            self.products[pid].current_stock -= need
+        doc.is_posted = True
         return True
 
-    def delete_item_confirmed(self, doc_id: int, item_id: int) -> bool:
-        """Mirrors AfterDelConfirm with Status=acDeleteOK (fixed behavior)."""
-        doc = self.documents[doc_id]
-        item = next(i for i in doc.items if i.id == item_id)
-        if not self.apply_stock_change(item.product_id, item.quantity, doc.transaction_type, -1):
-            return False
-        doc.items = [i for i in doc.items if i.id != item_id]
-        return True
 
-    def has_items(self, doc_id: int) -> bool:
-        return len(self.documents[doc_id].items) > 0
-
-
-class TestInventoryLogic(unittest.TestCase):
+class TestAnbarban(unittest.TestCase):
     def setUp(self) -> None:
-        self.app = InventoryApp()
-        self.p1 = self.app.add_product("کاغذ A4", "P-001", "بسته", 0, 10)
-        self.p2 = self.app.add_product("جوهر", "P-002", "عدد", 0, 5)
+        self.app = AnbarbanApp()
+        self.p = self.app.add_product("کاغذ A4", 0, 10)
 
-    def test_in_increases_stock(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.assertIsNotNone(self.app.add_item(d.id, self.p1.id, 10))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 10)
+    def test_draft_incoming_no_stock_change(self) -> None:
+        d = self.app.draft_incoming()
+        self.app.add_incoming_item(d.id, self.p.id, 20)
+        self.assertEqual(self.p.current_stock, 0)
+        self.assertTrue(self.app.post_incoming(d.id))
+        self.assertEqual(self.p.current_stock, 20)
 
-    def test_out_decreases_stock(self) -> None:
-        d_in = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d_in.id, self.p1.id, 10)
-        d_out = self.app.create_document("OUT-1", TRANSACTION_OUT, "DLV-1")
-        self.assertIsNotNone(self.app.add_item(d_out.id, self.p1.id, 3))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 7)
+    def test_outgoing_blocked_over_stock(self) -> None:
+        d_in = self.app.draft_incoming()
+        self.app.add_incoming_item(d_in.id, self.p.id, 10)
+        self.app.post_incoming(d_in.id)
+        d_out = self.app.draft_outgoing()
+        self.assertFalse(self.app.add_outgoing_item(d_out.id, self.p.id, 15))
+        self.assertEqual(self.p.current_stock, 10)
 
-    def test_out_cannot_go_negative(self) -> None:
-        d_in = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d_in.id, self.p1.id, 5)
-        d_out = self.app.create_document("OUT-1", TRANSACTION_OUT, "DLV-1")
-        self.assertIsNone(self.app.add_item(d_out.id, self.p1.id, 6))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 5)
-        self.assertIn("stock negative", self.app.errors)
-
-    def test_quantity_must_be_positive(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.assertIsNone(self.app.add_item(d.id, self.p1.id, 0))
-        self.assertIsNone(self.app.add_item(d.id, self.p1.id, -2))
-
-    def test_out_requires_delivery_number(self) -> None:
-        with self.assertRaises(ValueError):
-            self.app.create_document("OUT-1", TRANSACTION_OUT, "")
-        self.assertFalse(self.app.validate_header(TRANSACTION_OUT, None))
-        self.assertFalse(self.app.validate_header(TRANSACTION_OUT, "  "))
-
-    def test_multi_item_document(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d.id, self.p1.id, 4)
-        self.app.add_item(d.id, self.p2.id, 8)
-        self.assertEqual(len(d.items), 2)
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 4)
-        self.assertEqual(self.app.products[self.p2.id].current_stock, 8)
-
-    def test_edit_item_adjusts_stock(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        item = self.app.add_item(d.id, self.p1.id, 5)
-        assert item is not None
-        self.assertTrue(self.app.edit_item(d.id, item.id, self.p1.id, 9))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 9)
-
-    def test_edit_out_blocked_when_insufficient(self) -> None:
-        d_in = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d_in.id, self.p1.id, 5)
-        d_out = self.app.create_document("OUT-1", TRANSACTION_OUT, "DLV-1")
-        item = self.app.add_item(d_out.id, self.p1.id, 2)
-        assert item is not None
-        self.assertFalse(self.app.edit_item(d_out.id, item.id, self.p1.id, 6))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 3)
-
-    def test_delete_item_restores_stock(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        item = self.app.add_item(d.id, self.p1.id, 7)
-        assert item is not None
-        self.assertTrue(self.app.delete_item_confirmed(d.id, item.id))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 0)
-        self.assertEqual(len(d.items), 0)
-
-    def test_delete_out_item_returns_stock(self) -> None:
-        d_in = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d_in.id, self.p1.id, 10)
-        d_out = self.app.create_document("OUT-1", TRANSACTION_OUT, "DLV-9")
-        item = self.app.add_item(d_out.id, self.p1.id, 4)
-        assert item is not None
-        self.assertTrue(self.app.delete_item_confirmed(d_out.id, item.id))
-        self.assertEqual(self.app.products[self.p1.id].current_stock, 10)
-
-    def test_low_stock_detection(self) -> None:
-        d = self.app.create_document("IN-1", TRANSACTION_IN)
-        self.app.add_item(d.id, self.p1.id, 3)  # min 10
-        low = [p for p in self.app.products.values() if p.is_active and p.current_stock <= p.minimum_stock]
-        self.assertEqual({p.code for p in low}, {"P-001", "P-002"})
-
-    def test_combo_display_maps_to_stored_values(self) -> None:
-        display = {"ورود": "IN", "خروج": "OUT"}
-        self.assertEqual(display["ورود"], TRANSACTION_IN)
-        self.assertEqual(display["خروج"], TRANSACTION_OUT)
+    def test_post_outgoing_reduces(self) -> None:
+        d_in = self.app.draft_incoming()
+        self.app.add_incoming_item(d_in.id, self.p.id, 10)
+        self.app.post_incoming(d_in.id)
+        d_out = self.app.draft_outgoing()
+        self.app.add_outgoing_item(d_out.id, self.p.id, 4)
+        self.assertTrue(self.app.post_outgoing(d_out.id))
+        self.assertEqual(self.p.current_stock, 6)
 
 
 if __name__ == "__main__":

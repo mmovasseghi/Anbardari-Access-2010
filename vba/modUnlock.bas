@@ -1,0 +1,135 @@
+'------------------------------------------------------------------------------
+' modUnlock — کد ۶ کاراکتری یک‌بارمصرف برای باز کردن سند نهایی (آفلاین)
+' الگوریتم با «مولد کد مدیر» جداگانه یکسان است — docs/MANAGER_UNLOCK.md
+'------------------------------------------------------------------------------
+Option Compare Database
+Option Explicit
+
+Public Function ComputeUnlockCode(ByVal docKind As String, ByVal documentID As Long, ByVal documentNumber As String) As String
+    Dim seed As String
+    Dim h As Long
+    Dim i As Long
+    Dim ch As String
+    Const alphabet As String = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
+
+    docKind = UCase$(Trim$(docKind))
+    seed = docKind & "|" & CStr(documentID) & "|" & Trim$(documentNumber) & "|" & UNLOCK_ORG_SALT
+    h = 5381
+    For i = 1 To Len(seed)
+        h = ((h * 33) Xor Asc(Mid$(seed, i, 1))) And &H7FFFFFFF
+    Next i
+
+    ComputeUnlockCode = ""
+    For i = 1 To 6
+        ch = Mid$(alphabet, (h Mod 32) + 1, 1)
+        ComputeUnlockCode = ComputeUnlockCode & ch
+        h = (h * 1103515245 + 12345) And &H7FFFFFFF
+    Next i
+End Function
+
+Public Function TryUnlockDocument(ByVal docKind As String, ByVal documentID As Long, ByVal documentNumber As String, ByVal enteredCode As String) As Boolean
+    Dim expected As String
+    Dim code As String
+
+    TryUnlockDocument = False
+    code = UCase$(Trim$(Replace$(enteredCode, " ", "")))
+    If Len(code) <> 6 Then Exit Function
+
+    expected = ComputeUnlockCode(docKind, documentID, documentNumber)
+    If code <> expected Then Exit Function
+    If UnlockCodeAlreadyUsed(code) Then Exit Function
+
+    If Not RecordUsedUnlockCode(code, docKind, documentID) Then Exit Function
+    TryUnlockDocument = True
+End Function
+
+Private Function UnlockCodeAlreadyUsed(ByVal code As String) As Boolean
+    Dim rs As DAO.Recordset
+    UnlockCodeAlreadyUsed = False
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ID FROM UsedUnlockCodes WHERE UnlockCode='" & Replace$(code, "'", "''") & "'", dbOpenSnapshot)
+    UnlockCodeAlreadyUsed = Not rs.EOF
+    rs.Close
+    Set rs = Nothing
+End Function
+
+Private Function RecordUsedUnlockCode(ByVal code As String, ByVal docKind As String, ByVal documentID As Long) As Boolean
+    Dim rs As DAO.Recordset
+    On Error GoTo EH
+    Set rs = CurrentDb.OpenRecordset("UsedUnlockCodes", dbOpenDynaset)
+    rs.AddNew
+    rs!UnlockCode = code
+    rs!DocKind = docKind
+    rs!DocumentID = documentID
+    rs!UsedAt = Now
+    rs.Update
+    rs.Close
+    Set rs = Nothing
+    RecordUsedUnlockCode = True
+    Exit Function
+EH:
+    RecordUsedUnlockCode = False
+End Function
+
+Public Function PromptUnlockIfPosted(ByVal docKind As String, ByVal documentID As Long, ByVal documentNumber As String, ByVal isPosted As Boolean) As Boolean
+    Dim code As String
+    If Not isPosted Then
+        PromptUnlockIfPosted = True
+        Exit Function
+    End If
+    code = InputBox( _
+        "این سند نهایی شده است." & vbCrLf & _
+        "برای اصلاح، کد ۶ حرفی/عددی را که مدیر داده وارد کنید:", _
+        MSG_TITLE, "")
+    If Len(Trim$(code)) = 0 Then
+        PromptUnlockIfPosted = False
+        Exit Function
+    End If
+    If TryUnlockDocument(docKind, documentID, documentNumber, code) Then
+        Call UnpostDocument(docKind, documentID)
+        MsgBox "سند برای اصلاح باز شد. بعد از اصلاح دوباره «بررسی و ثبت» را انجام دهید.", vbInformation, MSG_TITLE
+        PromptUnlockIfPosted = True
+    Else
+        MsgBox ERR_UNLOCK_INVALID, vbExclamation, MSG_TITLE
+        PromptUnlockIfPosted = False
+    End If
+End Function
+
+Private Sub UnpostDocument(ByVal docKind As String, ByVal documentID As Long)
+    Dim tbl As String
+    docKind = UCase$(Trim$(docKind))
+    If docKind = DOC_INCOMING Then
+        tbl = "IncomingDocuments"
+        Call ReverseIncomingStock(documentID)
+    ElseIf docKind = DOC_OUTGOING Then
+        tbl = "OutgoingDocuments"
+        Call ReverseOutgoingStock(documentID)
+    Else
+        Exit Sub
+    End If
+    CurrentDb.Execute "UPDATE " & tbl & " SET IsPosted=False, PostedAt=Null WHERE ID=" & documentID, dbFailOnError
+End Sub
+
+Private Sub ReverseIncomingStock(ByVal documentID As Long)
+    Dim rs As DAO.Recordset
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ProductID, Quantity FROM IncomingItems WHERE IncomingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        Call ApplyStockChange(CLng(rs!ProductID), CLng(rs!Quantity), "OUT", 1)
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+End Sub
+
+Private Sub ReverseOutgoingStock(ByVal documentID As Long)
+    Dim rs As DAO.Recordset
+    Set rs = CurrentDb.OpenRecordset( _
+        "SELECT ProductID, Quantity FROM OutgoingItems WHERE OutgoingDocumentID=" & documentID, dbOpenSnapshot)
+    Do While Not rs.EOF
+        Call ApplyStockChange(CLng(rs!ProductID), CLng(rs!Quantity), "IN", 1)
+        rs.MoveNext
+    Loop
+    rs.Close
+    Set rs = Nothing
+End Sub

@@ -1,52 +1,41 @@
-' qryInOut — گزارش ورود و خروج با فیلتر فرم frmInOutReport
-' وابستگی به کنترل‌های فرم فیلتر
-
-SELECT
-    Documents.DocumentDate AS [تاریخ],
-    Documents.DocumentNumber AS [شماره سند],
-    Documents.DeliveryNumber AS [شماره حواله],
-    IIf([Documents].[TransactionType]="IN","ورود","خروج") AS [نوع عملیات],
-    Products.ProductName AS [کالا],
-    Products.ProductCode AS [کد کالا],
-    DocumentItems.Quantity AS [تعداد],
-    Documents.Source AS [مبدأ],
-    Documents.Destination AS [مقصد],
-    Documents.Description AS [توضیحات]
-FROM (Documents
-    INNER JOIN DocumentItems ON Documents.ID = DocumentItems.DocumentID)
-    INNER JOIN Products ON DocumentItems.ProductID = Products.ID
+SELECT * FROM (
+    SELECT
+        d.DocumentDate AS DocDate,
+        d.DocumentNumber AS [شماره سند],
+        d.InvoiceNumber AS [شماره فاکتور],
+        Null AS [شماره حواله],
+        "ورود" AS [نوع عملیات],
+        s.SupplierName AS [فروشنده / بخش],
+        p.ProductName AS [کالا],
+        ii.Quantity AS [تعداد],
+        d.Description AS [توضیحات]
+    FROM ((IncomingDocuments AS d
+        INNER JOIN IncomingItems AS ii ON d.ID = ii.IncomingDocumentID)
+        INNER JOIN Products AS p ON ii.ProductID = p.ID)
+        INNER JOIN Suppliers AS s ON d.SupplierID = s.ID
+    WHERE d.IsPosted = True
+    UNION ALL
+    SELECT
+        d.DocumentDate,
+        d.DocumentNumber,
+        Null,
+        d.DeliveryNumber,
+        "خروج",
+        dep.DepartmentName,
+        p.ProductName,
+        oi.Quantity,
+        d.Description
+    FROM ((OutgoingDocuments AS d
+        INNER JOIN OutgoingItems AS oi ON d.ID = oi.OutgoingDocumentID)
+        INNER JOIN Products AS p ON oi.ProductID = p.ID)
+        INNER JOIN Departments AS dep ON oi.DepartmentID = dep.ID
+    WHERE d.IsPosted = True
+) AS Q
 WHERE
-    (
-        Forms!frmInOutReport!cboType Is Null
-        Or Forms!frmInOutReport!cboType = ""
-        Or Documents.TransactionType = Forms!frmInOutReport!cboType
-    )
-    AND
-    (
-        Forms!frmInOutReport!txtFromDate Is Null
-        Or Documents.DocumentDate >= Forms!frmInOutReport!txtFromDate
-    )
-    AND
-    (
-        Forms!frmInOutReport!txtToDate Is Null
-        Or Documents.DocumentDate <= Forms!frmInOutReport!txtToDate
-    )
-    AND
-    (
-        Forms!frmInOutReport!cboProduct Is Null
-        Or Forms!frmInOutReport!cboProduct = ""
-        Or DocumentItems.ProductID = Forms!frmInOutReport!cboProduct
-    )
-    AND
-    (
-        Forms!frmInOutReport!txtDocNo Is Null
-        Or Forms!frmInOutReport!txtDocNo = ""
-        Or Documents.DocumentNumber Like "*" & Forms!frmInOutReport!txtDocNo & "*"
-    )
-    AND
-    (
-        Forms!frmInOutReport!txtDeliveryNo Is Null
-        Or Forms!frmInOutReport!txtDeliveryNo = ""
-        Or Documents.DeliveryNumber Like "*" & Forms!frmInOutReport!txtDeliveryNo & "*"
-    )
-ORDER BY Documents.DocumentDate DESC, Documents.DocumentNumber;
+    (Forms!frmReports!txtFromGreg Is Null OR DocDate >= Forms!frmReports!txtFromGreg)
+    AND (Forms!frmReports!txtToGreg Is Null OR DocDate <= Forms!frmReports!txtToGreg)
+    AND (Forms!frmReports!cboProduct Is Null OR Forms!frmReports!cboProduct = "" OR [کالا] IN (SELECT ProductName FROM Products WHERE ID=Forms!frmReports!cboProduct))
+    AND (Forms!frmReports!txtDocNo Is Null OR Forms!frmReports!txtDocNo = "" OR [شماره سند] Like "*" & Forms!frmReports!txtDocNo & "*")
+    AND (Forms!frmReports!txtInvoiceNo Is Null OR Forms!frmReports!txtInvoiceNo = "" OR [شماره فاکتور] Like "*" & Forms!frmReports!txtInvoiceNo & "*")
+    AND (Forms!frmReports!txtDeliveryNo Is Null OR Forms!frmReports!txtDeliveryNo = "" OR [شماره حواله] Like "*" & Forms!frmReports!txtDeliveryNo & "*")
+ORDER BY DocDate DESC;

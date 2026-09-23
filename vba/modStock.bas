@@ -1,8 +1,11 @@
 '------------------------------------------------------------------------------
-' modStock — Access 2010 / DAO / سبک
+' modStock — موجودی — Access 2010
 '------------------------------------------------------------------------------
 Option Compare Database
 Option Explicit
+
+Public Const TRANSACTION_IN As String = "IN"
+Public Const TRANSACTION_OUT As String = "OUT"
 
 Public Function ApplyStockChange( _
     ByVal productID As Long, _
@@ -17,11 +20,7 @@ Public Function ApplyStockChange( _
     Dim curStock As Long
 
     ApplyStockChange = False
-
-    If productID <= 0 Or quantity <= 0 Then
-        MsgBox ERR_QTY_POSITIVE, vbExclamation, MSG_TITLE
-        Exit Function
-    End If
+    If productID <= 0 Or quantity <= 0 Then Exit Function
 
     transactionType = UCase$(Trim$(transactionType))
     If transactionType = TRANSACTION_IN Then
@@ -29,7 +28,6 @@ Public Function ApplyStockChange( _
     ElseIf transactionType = TRANSACTION_OUT Then
         signedQty = -quantity * deltaSign
     Else
-        MsgBox ERR_TX_REQUIRED, vbExclamation, MSG_TITLE
         Exit Function
     End If
 
@@ -37,7 +35,6 @@ Public Function ApplyStockChange( _
     If rs.EOF Then
         rs.Close
         Set rs = Nothing
-        MsgBox "کالای انتخاب‌شده پیدا نشد.", vbExclamation, MSG_TITLE
         Exit Function
     End If
 
@@ -46,7 +43,6 @@ Public Function ApplyStockChange( _
     If newStock < 0 Then
         rs.Close
         Set rs = Nothing
-        MsgBox ERR_STOCK_NEGATIVE & vbCrLf & "موجودی فعلی: " & curStock, vbExclamation, MSG_TITLE
         Exit Function
     End If
 
@@ -55,18 +51,7 @@ Public Function ApplyStockChange( _
     rs.Update
     rs.Close
     Set rs = Nothing
-
     ApplyStockChange = True
-End Function
-
-Public Function GetDocumentTransactionType(ByVal documentID As Long) As String
-    Dim rs As DAO.Recordset
-    GetDocumentTransactionType = ""
-    If documentID <= 0 Then Exit Function
-    Set rs = CurrentDb.OpenRecordset("SELECT TransactionType FROM Documents WHERE ID=" & documentID, dbOpenSnapshot)
-    If Not rs.EOF Then GetDocumentTransactionType = Nz(rs!TransactionType, "")
-    rs.Close
-    Set rs = Nothing
 End Function
 
 Public Function GetProductCurrentStock(ByVal productID As Long) As Long
@@ -79,12 +64,22 @@ Public Function GetProductCurrentStock(ByVal productID As Long) As Long
     Set rs = Nothing
 End Function
 
-Public Function DocumentHasItems(ByVal documentID As Long) As Boolean
+Public Function DocumentHasIncomingItems(ByVal documentID As Long) As Boolean
     Dim rs As DAO.Recordset
-    DocumentHasItems = False
+    DocumentHasIncomingItems = False
     If documentID <= 0 Then Exit Function
-    Set rs = CurrentDb.OpenRecordset("SELECT ID FROM DocumentItems WHERE DocumentID=" & documentID, dbOpenSnapshot)
-    DocumentHasItems = Not rs.EOF
+    Set rs = CurrentDb.OpenRecordset("SELECT ID FROM IncomingItems WHERE IncomingDocumentID=" & documentID, dbOpenSnapshot)
+    DocumentHasIncomingItems = Not rs.EOF
+    rs.Close
+    Set rs = Nothing
+End Function
+
+Public Function DocumentHasOutgoingItems(ByVal documentID As Long) As Boolean
+    Dim rs As DAO.Recordset
+    DocumentHasOutgoingItems = False
+    If documentID <= 0 Then Exit Function
+    Set rs = CurrentDb.OpenRecordset("SELECT ID FROM OutgoingItems WHERE OutgoingDocumentID=" & documentID, dbOpenSnapshot)
+    DocumentHasOutgoingItems = Not rs.EOF
     rs.Close
     Set rs = Nothing
 End Function

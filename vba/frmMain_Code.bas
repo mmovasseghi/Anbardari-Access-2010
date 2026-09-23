@@ -1,35 +1,39 @@
 '------------------------------------------------------------------------------
-' frmMain — منوی اصلی اپراتور — Access 2010
+' frmMain — منوی اصلی انباربان
 '------------------------------------------------------------------------------
 Option Compare Database
 Option Explicit
 
 Private Sub Form_Load()
-    Me.Caption = "سیستم انبارداری"
+    Me.Caption = MSG_TITLE
 End Sub
 
 Private Sub btnIn_Click()
-    DoCmd.OpenForm "frmDocuments", , , , , , TRANSACTION_IN
+    DoCmd.OpenForm "frmIncoming", , , , acFormAdd
 End Sub
 
 Private Sub btnOut_Click()
-    DoCmd.OpenForm "frmDocuments", , , , , , TRANSACTION_OUT
+    DoCmd.OpenForm "frmOutgoing", , , , acFormAdd
 End Sub
 
 Private Sub btnProducts_Click()
     DoCmd.OpenForm "frmProducts"
 End Sub
 
-Private Sub btnSearch_Click()
-    DoCmd.OpenForm "frmProductSearch"
+Private Sub btnSuppliers_Click()
+    DoCmd.OpenForm "frmSuppliers"
+End Sub
+
+Private Sub btnDepartments_Click()
+    DoCmd.OpenForm "frmDepartments"
+End Sub
+
+Private Sub btnReports_Click()
+    DoCmd.OpenForm "frmReports"
 End Sub
 
 Private Sub btnStock_Click()
     DoCmd.OpenForm "frmStockView"
-End Sub
-
-Private Sub btnInOutReport_Click()
-    DoCmd.OpenForm "frmInOutReport"
 End Sub
 
 Private Sub btnLowStock_Click()
