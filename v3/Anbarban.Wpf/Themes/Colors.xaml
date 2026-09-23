@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- برند انباربان — الهام از لوگو (سبز فلزی + طلایی روی تیره) -->
+  <Color x:Key="BgDeep">#FF0A0E0D</Color>
+  <Color x:Key="BgCard">#FF121A18</Color>
+  <Color x:Key="BgCardHover">#FF1A2623</Color>
+  <Color x:Key="AccentTeal">#FF1F6B5C</Color>
+  <Color x:Key="AccentTealBright">#FF2D9B86</Color>
+  <Color x:Key="AccentGold">#FFC9A227</Color>
+  <Color x:Key="TextPrimary">#FFF2F5F4</Color>
+  <Color x:Key="TextMuted">#FF9AA8A3</Color>
+  <Color x:Key="Danger">#FFE85D5D</Color>
+
+  <SolidColorBrush x:Key="BrushBgDeep" Color="{StaticResource BgDeep}"/>
+  <SolidColorBrush x:Key="BrushBgCard" Color="{StaticResource BgCard}"/>
+  <SolidColorBrush x:Key="BrushAccent" Color="{StaticResource AccentTealBright}"/>
+  <SolidColorBrush x:Key="BrushAccentDark" Color="{StaticResource AccentTeal}"/>
+  <SolidColorBrush x:Key="BrushGold" Color="{StaticResource AccentGold}"/>
+  <SolidColorBrush x:Key="BrushText" Color="{StaticResource TextPrimary}"/>
+  <SolidColorBrush x:Key="BrushMuted" Color="{StaticResource TextMuted}"/>
+</ResourceDictionary>

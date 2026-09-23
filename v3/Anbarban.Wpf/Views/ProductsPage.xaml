@@ -1,0 +1,41 @@
+<Page x:Class="Anbarban.Views.ProductsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBgDeep}"
+      FlowDirection="RightToLeft"
+      FontFamily="{StaticResource FontUi}">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock x:Name="TxtTitle" Text="مدیریت کالاها" Style="{StaticResource PageTitle}"/>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,0,12">
+      <TextBox x:Name="TxtSearch" Width="320" Height="36" VerticalContentAlignment="Center"
+               Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"
+               BorderBrush="{StaticResource BrushAccentDark}" Padding="10,4"
+               ToolTip="نام یا کد کالا"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="جستجو" Margin="8,0,0,0" Click="OnSearch"/>
+    </StackPanel>
+
+    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
+              Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"
+              RowBackground="{StaticResource BrushBgCard}" AlternatingRowBackground="#FF151F1C"
+              BorderBrush="{StaticResource BrushAccentDark}" GridLinesVisibility="Horizontal"
+              HeadersVisibility="Column" FontSize="14">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="نام کالا" Binding="{Binding Name}" Width="*"/>
+        <DataGridTextColumn Header="کد" Binding="{Binding Code}" Width="100"/>
+        <DataGridTextColumn Header="واحد" Binding="{Binding Unit}" Width="80"/>
+        <DataGridTextColumn Header="موجودی" Binding="{Binding CurrentStock}" Width="90"/>
+        <DataGridTextColumn Header="حداقل" Binding="{Binding MinimumStock}" Width="80"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <Button Grid.Row="3" Style="{StaticResource MenuTileButton}" Content="بازگشت به منو"
+            HorizontalAlignment="Left" Margin="0,16,0,0" Click="OnBack"/>
+  </Grid>
+</Page>
