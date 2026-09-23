@@ -1,9 +1,11 @@
 # انباربان — سیستم انبار
 
-### نسخه ۳ — اپ ویندوزی (WPF x64)
+### نسخه ۳ — اپ ویندوزی (پرتابل 64-bit)
 
-`Anbarban.exe` + `Data\Inventory.accdb` — **بدون فرم Access**.  
-[`v3/README.md`](v3/README.md) | [`release/RELEASE_NOTES_v3.0.md`](release/RELEASE_NOTES_v3.0.md)
+**دانلود:** [Release v3.0.1](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.1) → فایل **`Anbarban-v3-Portable.zip`**  
+Extract → **`شروع انباربان.bat`**
+
+سورس / توسعه: [`v3/README.md`](v3/README.md)
 
 ---
 

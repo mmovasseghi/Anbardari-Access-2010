@@ -1,39 +1,33 @@
-# انباربان v3.0 — اپ ویندوزی + Access
+# انباربان v3.0 / v3.0.1 — پرتابل ویندوز (64-bit)
 
-## تفاوت با v2
+## دانلود (فقط Extract و اجرا)
 
-| v2 | v3 |
-|----|-----|
-| فرم داخل Access | **اپ WPF جدا** (`Anbarban.exe`) |
-| UI ساده Access | UI تیره، لوگو، دکمه‌های بزرگ |
-| همان `Inventory.accdb` | همان دیتابیس — **بدون فرم Access** |
+فایل **`Anbarban-v3-Portable.zip`** را از این Release بگیرید.
 
-## دانلود
+داخل ZIP:
 
-سورس و اسکریپت ساخت در GitHub. فایل exe روی **ویندوز 64-bit** با:
+| فایل | کار |
+|------|-----|
+| **`شروع انباربان.bat`** | اجرای برنامه |
+| `Anbarban.exe` | اپ انباربان |
+| `Data\` | محل `Inventory.accdb` |
+| `ساخت-دیتابیس-اولیه\` | اگر دیتابیس ندارید و **Access** نصب است |
+| `tools\` | مولد کد مدیر |
+| `راهنما.txt` | خلاصه برای انباردار |
 
-```bat
-cd v3
-dotnet build Anbarban.sln -c Release
-scripts\Make-Portable.bat
-```
+## پیش‌نیاز روی PC (یک بار)
 
-خروجی: `release\Anbarban-v3-Portable\`
+1. **.NET Framework 4.8**
+2. **Microsoft Access Database Engine 2010 — 64-bit** (ACE OLEDB)
 
-## پیش‌نیاز PC انبار
+## اولین بار
 
-1. Windows 7 SP1+ (64-bit)
-2. .NET Framework 4.8
-3. **Microsoft Access Database Engine 2010 Redistributable — 64-bit** (ACE OLEDB)
-4. `Data\Inventory.accdb` (از `build\ساخت-دیتابیس.bat` v2)
+- اگر `Data\Inventory.accdb` نیست → از پوشه `ساخت-دیتابیس-اولیه` با Access بسازید، یا فایل را از PC دیگر کپی کنید.
+- بعد فقط **`شروع انباربان.bat`**.
 
-## امکانات
+## تفاوت با سورس
 
-- ثبت ورود و خروج دو مرحله‌ای
-- فروشنده، بخش، کالا
-- تاریخ شمسی
-- گزارش‌ها (جدول + کپی به Excel)
-- قفل سند + کد مدیر (`tools\مولد-کد-مدیر.bat`)
+این ZIP شامل **exe آماده** است؛ نیازی به Visual Studio / `dotnet build` روی PC انبار نیست.
 
 ## بکاپ
 

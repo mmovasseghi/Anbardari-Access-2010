@@ -1,0 +1,53 @@
+name: Build v3 Portable (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v3.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build portable ZIP
+        shell: pwsh
+        run: |
+          ./v3/scripts/Build-Portable-CI.ps1
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anbarban-v3-Portable
+          path: release/Anbarban-v3-Portable.zip
+          retention-days: 90
+
+      - name: Attach to GitHub Release (tag v3.x)
+        if: startsWith(github.ref, 'refs/tags/v3.')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/Anbarban-v3-Portable.zip
+          fail_on_unmatched_files: true
+
+      - name: Attach to Release v3.0.1 (manual dispatch on main)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "v3.0.1"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title "انباربان v3.0.1 — پرتابل ویندوز" --notes-file release/RELEASE_NOTES_v3.0.md
+          }
+          gh release upload $tag release/Anbarban-v3-Portable.zip --clobber
