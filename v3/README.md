@@ -23,7 +23,7 @@
 | مورد | توضیح |
 |------|--------|
 | .NET Framework **4.8** | [دانلود مایکروسافت](https://dotnet.microsoft.com/download/dotnet-framework/net48) |
-| **ACE OLEDB 64-bit** | در اولین اجرا **نصب/دانلود خودکار**؛ یا دستی از پوشه `redist` (هم‌تراز build x64) |
+| **ACE + .NET 4.8** | ZIP جدا **`Anbarban-v3-Prerequisites`** — آفلاین، پوشه `prerequisites` کنار exe |
 | `Inventory.accdb` | در پوشه `Data` کنار exe |
 
 ## ساخت روی ویندوز (توسعه‌دهنده)

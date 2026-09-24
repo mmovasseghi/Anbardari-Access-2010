@@ -66,6 +66,7 @@ namespace Anbarban.Views.Dialogs
         Cancel,
         InstallAce,
         DownloadAce,
+        OpenInstaller,
         OpenFolder,
         Retry
     }

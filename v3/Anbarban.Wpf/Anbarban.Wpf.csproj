@@ -11,7 +11,7 @@
     <AssemblyName>Anbarban</AssemblyName>
     <RootNamespace>Anbarban</RootNamespace>
     <StartupObject>Anbarban.Program</StartupObject>
-    <Version>3.0.4</Version>
+    <Version>3.0.5</Version>
     <Company>انباربان</Company>
     <Product>Anbarban Warehouse</Product>
     <Description>انباربان — اپ ویندوز با پایگاه Access</Description>
@@ -31,8 +31,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
-    <None Include="..\redist\**\*" LinkBase="redist">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

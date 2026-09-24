@@ -9,24 +9,31 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4">دانلود پرتابل v3.0.4</a>
+  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5">دانلود v3.0.5 (آفلاین)</a>
   ·
   <a href="v3/README.md">راهنمای توسعه‌دهنده</a>
   ·
-  <a href="release/RELEASE_NOTES_v3.0.4.md">یادداشت انتشار</a>
+  <a href="release/RELEASE_NOTES_v3.0.5.md">یادداشت انتشار</a>
 </p>
 
 ---
 
-## دانلود و اجرا (۲ دقیقه)
+## دانلود و اجرا (PC انبار **بدون اینترنت**)
+
+از [Release v3.0.5](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5) **دو فایل** بگیرید (یک‌بار با USB یا PC دیگر):
+
+| فایل | کار |
+|------|-----|
+| **`Anbarban-v3-App.zip`** | برنامه |
+| **`Anbarban-v3-Prerequisites.zip`** | .NET 4.8 + ACE 64-bit + `نصب-پیش‌نیازها.bat` |
 
 | مرحله | کار |
 |--------|-----|
-| ۱ | از [Release v3.0.4](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4) فایل **`Anbarban-v3-Portable.zip`** را بگیرید |
-| ۲ | Extract در هر پوشه (مثلاً `D:\Anbarban`) |
-| ۳ | دوبارکلیک **`شروع انباربان.bat`** |
+| ۱ | هر دو ZIP را در **یک پوشه** Extract کنید (مثلاً `D:\Anbarban`) — محتوای پیش‌نیاز داخل **`prerequisites\`** کنار `Anbarban.exe` |
+| ۲ | `prerequisites\نصب-پیش‌نیازها.bat` را اجرا کنید |
+| ۳ | **`شروع انباربان.bat`** |
 
-**پیش‌نیاز (یک بار):** Windows 7+ · [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) · **ACE 64-bit** (در صورت نبود، از داخل برنامه نصب می‌شود)
+**پیش‌نیاز:** Windows 7+ — برنامه **به اینترنت وصل نمی‌شود**؛ همه‌چیز از ZIPهای بالا.
 
 اگر `Data\Inventory.accdb` نبود، با اولین اجرا (با ACE) معمولاً خودکار ساخته می‌شود؛ یا **`ساخت-پایگاه-داده.bat`** را بزنید.
 
@@ -137,7 +144,7 @@ portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 
 | نسخه | مخاطب | دانلود |
 |------|--------|--------|
-| **v3** | **پیشنهاد — WPF پرتابل** | [v3.0.4](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4) |
+| **v3** | **پیشنهاد — WPF آفلاین** | [v3.0.5](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5) |
 | v2.0 | داخل Microsoft Access 2010 | [v2.0.0](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v2.0.0) · [`release/Anbarban-v2.0-Access-2010.zip`](release/Anbarban-v2.0-Access-2010.zip) |
 | v1.0 | پرتابل مرورگر (legacy) | [`release/Anbardari-v1.0-Windows.zip`](release/Anbardari-v1.0-Windows.zip) |
 

@@ -28,17 +28,30 @@ namespace Anbarban.Services
 
         public static AnbarMessageResult ShowAceMissing(Window? owner = null)
         {
+            var expected = OfflinePrerequisites.PrerequisitesFolder;
+            var hasFile = OfflinePrerequisites.HasAceInstaller;
             var msg =
-                "موتور پایگاه Microsoft Access (ACE) روی این ویندوز ثبت نشده است." + Environment.NewLine + Environment.NewLine +
-                "انباربان نسخه 64-bit به «Access Database Engine 64-bit» نیاز دارد." + Environment.NewLine + Environment.NewLine +
-                "پیشنهاد: دکمه «نصب خودکار» را بزنید (فایل در پوشه redist یا دانلود از مایکروسافت)." + Environment.NewLine +
-                "اگر Office 32-bit دارید، ممکن است نصب 64-bit خطا بدهد — در راهنما توضیح داده شده.";
+                "موتور پایگاه Microsoft Access (ACE) روی این ویندوز نصب نیست." + Environment.NewLine + Environment.NewLine +
+                OfflinePrerequisites.OfflineHelpText + Environment.NewLine + Environment.NewLine +
+                "مسیر پیش‌نیاز روی این PC:" + Environment.NewLine + expected + Environment.NewLine +
+                (hasFile
+                    ? "✓ فایل نصب ACE در پوشه پیدا شد — «شروع نصب ACE» را بزنید."
+                    : "✗ فایل AccessDatabaseEngine_X64.exe اینجا نیست — ZIP پیش‌نیازها را کپی کنید.");
 
             var buttons = new List<AnbarMessageButton>
             {
-                new AnbarMessageButton { Text = "نصب خودکار موتور", Result = AnbarMessageResult.InstallAce, IsPrimary = true },
-                new AnbarMessageButton { Text = "دانلود از مایکروسافت", Result = AnbarMessageResult.DownloadAce },
-                new AnbarMessageButton { Text = "باز کردن پوشه redist", Result = AnbarMessageResult.OpenFolder },
+                new AnbarMessageButton
+                {
+                    Text = hasFile ? "شروع نصب ACE" : "باز کردن پوشه پیش‌نیازها",
+                    Result = AnbarMessageResult.InstallAce,
+                    IsPrimary = true
+                },
+                new AnbarMessageButton
+                {
+                    Text = "نمایش فایل نصب در Explorer",
+                    Result = AnbarMessageResult.OpenInstaller
+                },
+                new AnbarMessageButton { Text = "باز کردن پوشه prerequisites", Result = AnbarMessageResult.OpenFolder },
                 new AnbarMessageButton { Text = "دوباره امتحان کن", Result = AnbarMessageResult.Retry },
                 AnbarMessageButton.Cancel("بستن")
             };

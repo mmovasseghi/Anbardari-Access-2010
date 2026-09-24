@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using Anbarban.Data;
 using Anbarban.Views;
@@ -53,16 +52,20 @@ namespace Anbarban.Services
                     AceProviderService.ClearCache();
                     return true;
 
-                case AnbarMessageResult.DownloadAce:
-                    AceInstaller.OpenDownloadPage();
+                case AnbarMessageResult.OpenInstaller:
+                    OfflinePrerequisites.OpenAceInstallerInExplorer();
                     return true;
 
                 case AnbarMessageResult.OpenFolder:
-                    AceInstaller.OpenRedistFolder();
+                    OfflinePrerequisites.OpenPrerequisitesFolder();
                     return true;
 
                 case AnbarMessageResult.InstallAce:
-                    return RunAceInstall();
+                    return RunAceInstallOffline();
+
+                case AnbarMessageResult.DownloadAce:
+                    OfflinePrerequisites.OpenAceInstallerInExplorer();
+                    return true;
 
                 case AnbarMessageResult.Cancel:
                 case AnbarMessageResult.None:
@@ -71,44 +74,33 @@ namespace Anbarban.Services
             }
         }
 
-        private static bool RunAceInstall()
+        private static bool RunAceInstallOffline()
         {
-            if (AceInstaller.HasBundledInstaller)
-                return LaunchInstallerAndExit();
-
-            AnbarbanDialog.Info("در حال آماده‌سازی فایل نصب موتور پایگاه… لطفاً چند لحظه صبر کنید.");
-            try
+            if (!OfflinePrerequisites.HasAceInstaller)
             {
-                var (ok, log) = Task.Run(() => AceInstaller.TryDownloadInstallerAsync()).GetAwaiter().GetResult();
-                if (!ok)
-                {
-                    UiDialog.Error("انجام نشد",
-                        "دانلود خودکار ممکن نشد." + Environment.NewLine + Environment.NewLine + log +
-                        Environment.NewLine + Environment.NewLine +
-                        "از دکمه «دانلود از مایکروسافت» استفاده کنید یا فایل AccessDatabaseEngine_X64.exe را در پوشه redist قرار دهید.");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                UiDialog.Error("انجام نشد", ex.Message);
+                OfflinePrerequisites.OpenPrerequisitesFolder();
+                AnbarbanDialog.Warn(
+                    "فایل نصب ACE پیدا نشد." + Environment.NewLine + Environment.NewLine +
+                    "از Release، ZIP «پیش‌نیازها» را گرفته و محتوا را در پوشه prerequisites کنار Anbarban.exe قرار دهید." + Environment.NewLine +
+                    "سپس روی AccessDatabaseEngine_X64.exe دوبارکلیک کنید یا دوباره «شروع نصب ACE» را بزنید.",
+                    null,
+                    "پیش‌نیاز آفلاین");
                 return true;
             }
 
-            if (AceInstaller.HasBundledInstaller)
-                return LaunchInstallerAndExit();
-
-            UiDialog.Error("انجام نشد", "فایل نصب در پوشه redist پیدا نشد.");
-            return true;
+            return LaunchInstallerAndExit();
         }
 
         private static bool LaunchInstallerAndExit()
         {
-            var (started, message) = AceInstaller.TryRunBundledInstall();
+            var (started, message) = OfflinePrerequisites.TryRunAceInstall();
             if (started)
                 AnbarbanDialog.Info(message + Environment.NewLine + Environment.NewLine + "پس از پایان نصب، انباربان را دوباره اجرا کنید.");
             else
+            {
+                OfflinePrerequisites.OpenAceInstallerInExplorer();
                 UiDialog.Error("انجام نشد", message);
+            }
             if (started)
                 Application.Current.Shutdown();
             return !started;

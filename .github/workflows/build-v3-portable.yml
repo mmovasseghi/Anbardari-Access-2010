@@ -28,17 +28,23 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Anbarban-v3-Portable
-          path: release/Anbarban-v3-Portable.zip
+          name: Anbarban-v3-packages
+          path: |
+            release/Anbarban-v3-App.zip
+            release/Anbarban-v3-Prerequisites.zip
+            release/Anbarban-v3-Portable.zip
           retention-days: 90
 
       - name: Attach to GitHub Release (tag v3.x)
         if: startsWith(github.ref, 'refs/tags/v3.')
         uses: softprops/action-gh-release@v2
         with:
-          name: انباربان ${{ github.ref_name }} — پرتابل WPF (64-bit)
+          name: انباربان ${{ github.ref_name }} — آفلاین (برنامه + پیش‌نیاز جدا)
           body_path: release/RELEASE_NOTES_${{ github.ref_name }}.md
-          files: release/Anbarban-v3-Portable.zip
+          files: |
+            release/Anbarban-v3-App.zip
+            release/Anbarban-v3-Prerequisites.zip
+            release/Anbarban-v3-Portable.zip
           fail_on_unmatched_files: true
           make_latest: true
 

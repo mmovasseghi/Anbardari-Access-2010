@@ -1,4 +1,4 @@
-# Build Anbarban v3 portable ZIP (Windows CI or local)
+# Build Anbarban v3 — برنامهٔ جدا + پیش‌نیازهای جدا (آفلاین)
 $ErrorActionPreference = "Stop"
 $v3Root = Split-Path -Parent $PSScriptRoot
 $repoRoot = Split-Path -Parent $v3Root
@@ -11,68 +11,73 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet build failed" }
 $src = Join-Path $v3Root "Anbarban.Wpf\bin\Release\net48"
 if (-not (Test-Path (Join-Path $src "Anbarban.exe"))) { throw "Anbarban.exe not found in $src" }
 
-$outName = "Anbarban-v3-Portable"
 $releaseDir = Join-Path $repoRoot "release"
-$outDir = Join-Path $releaseDir $outName
-$zipPath = Join-Path $releaseDir "$outName.zip"
+$appName = "Anbarban-v3-App"
+$appDir = Join-Path $releaseDir $appName
+$appZip = Join-Path $releaseDir "$appName.zip"
 
-if (Test-Path $outDir) { Remove-Item -Recurse -Force $outDir }
-New-Item -ItemType Directory -Path (Join-Path $outDir "Data") | Out-Null
-New-Item -ItemType Directory -Path (Join-Path $outDir "tools") | Out-Null
+if (Test-Path $appDir) { Remove-Item -Recurse -Force $appDir }
+New-Item -ItemType Directory -Path (Join-Path $appDir "Data") | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $appDir "tools") | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $appDir "prerequisites") | Out-Null
 
-Copy-Item -Path "$src\*" -Destination $outDir -Recurse -Force
+Copy-Item -Path "$src\*" -Destination $appDir -Recurse -Force
+# redist/install-ace داخل اپ نمی‌رود — پیش‌نیاز فقط از ZIP جدا
 
-$redistSrc = Join-Path $v3Root "redist"
-if (Test-Path $redistSrc) {
-  Copy-Item -Path "$redistSrc\*" -Destination (Join-Path $outDir "redist") -Recurse -Force
-}
+# حذف redist از خروجی build اگر کپی شده
+$redistInApp = Join-Path $appDir "redist"
+if (Test-Path $redistInApp) { Remove-Item -Recurse -Force $redistInApp }
 
 $dbSrc = Join-Path $repoRoot "database\Inventory.accdb"
 if (Test-Path $dbSrc) {
-  Copy-Item $dbSrc (Join-Path $outDir "Data\Inventory.accdb")
+  Copy-Item $dbSrc (Join-Path $appDir "Data\Inventory.accdb")
 } else {
   @"
 اگر Inventory.accdb اینجا نیست:
-- اول Anbarban.exe را بزنید (با ACE 64-bit معمولاً خودکار ساخته می‌شود)
+- بعد از نصب ACE، Anbarban.exe را بزنید (معمولاً خودکار ساخته می‌شود)
 - یا «ساخت-پایگاه-داده.bat» را اجرا کنید
-"@ | Set-Content -Path (Join-Path $outDir "Data\README.txt") -Encoding UTF8
+"@ | Set-Content -Path (Join-Path $appDir "Data\README.txt") -Encoding UTF8
 }
 
-Copy-Item (Join-Path $repoRoot "release\راهنما-انباربان.txt") (Join-Path $outDir "راهنما.txt") -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $v3Root "راهنما-نسخه۳.txt") (Join-Path $outDir "راهنما-نسخه۳.txt") -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $repoRoot "tools\generate_unlock_code.py") (Join-Path $outDir "tools\") -ErrorAction SilentlyContinue
-Copy-Item (Join-Path $repoRoot "tools\مولد-کد-مدیر.bat") (Join-Path $outDir "tools\") -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $repoRoot "release\راهنما-انباربان.txt") (Join-Path $appDir "راهنما.txt") -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $v3Root "راهنما-نسخه۳.txt") (Join-Path $appDir "راهنما-نسخه۳.txt") -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $repoRoot "tools\generate_unlock_code.py") (Join-Path $appDir "tools\") -ErrorAction SilentlyContinue
+Copy-Item (Join-Path $repoRoot "tools\مولد-کد-مدیر.bat") (Join-Path $appDir "tools\") -ErrorAction SilentlyContinue
 
-# ساخت پایگاه — فقط جداول (بدون frmMain)
-$buildDb = Join-Path $outDir "build-db"
+$buildDb = Join-Path $appDir "build-db"
 New-Item -ItemType Directory -Path $buildDb | Out-Null
 Copy-Item (Join-Path $repoRoot "build\Build-Database-TablesOnly.vbs") $buildDb -Force
-Copy-Item (Join-Path $v3Root "portable-template\ساخت-پایگاه-داده.bat") (Join-Path $outDir "ساخت-پایگاه-داده.bat") -Force
+Copy-Item (Join-Path $v3Root "portable-template\ساخت-پایگاه-داده.bat") (Join-Path $appDir "ساخت-پایگاه-داده.bat") -Force
+
+Copy-Item (Join-Path $v3Root "prerequisites-template\شروع-بخوانید-پیش‌نیاز.txt") (Join-Path $appDir "prerequisites\اینجا-پیش‌نیاز-بریزید.txt") -ErrorAction SilentlyContinue
 
 @"
-انباربان v3 — پرتابل
+انباربان v3 — برنامه (آفلاین)
 
-۱) روی «شروع انباربان.bat» دوبار کلیک کنید.
+این ZIP فقط خود برنامه است.
 
-۲) اگر پیام «پایگاه داده پیدا نشد» دیدید:
-   - «ساخت-پایگاه-داده.bat» (فقط جداول، بدون frmMain)
-   - یا Anbarban.exe را بزنید (خودکار اگر ACE نصب باشد)
-   - فایل Inventory.accdb را در پوشه Data کپی کنید.
-
-۳) پیش‌نیاز: .NET 4.8 — موتور ACE در صورت نبودن از داخل برنامه نصب/دانلود می‌شود (پوشه redist)
+۱) از Release هم «Anbarban-v3-Prerequisites.zip» را بگیرید.
+۲) محتوای ZIP پیش‌نیاز را در پوشه prerequisites کنار Anbarban.exe بریزید.
+۳) روی PC انبار: نصب-پیش‌نیازها.bat (در prerequisites) سپس «شروع انباربان.bat».
 
 بکاپ: Data\Inventory.accdb
-"@ | Set-Content -Path (Join-Path $outDir "شروع-بخوانید.txt") -Encoding UTF8
+"@ | Set-Content -Path (Join-Path $appDir "شروع-بخوانید.txt") -Encoding UTF8
 
 @"
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
 start "" "Anbarban.exe"
-"@ | Set-Content -Path (Join-Path $outDir "شروع انباربان.bat") -Encoding ASCII
+"@ | Set-Content -Path (Join-Path $appDir "شروع انباربان.bat") -Encoding ASCII
 
-if (Test-Path $zipPath) { Remove-Item -Force $zipPath }
-Compress-Archive -Path $outDir -DestinationPath $zipPath -Force
+if (Test-Path $appZip) { Remove-Item -Force $appZip }
+Compress-Archive -Path $appDir -DestinationPath $appZip -Force
+Write-Host "OK: $appZip"
 
-Write-Host "OK: $zipPath"
-Get-Item $zipPath | Format-List Name, Length
+Write-Host "== prerequisites package =="
+& (Join-Path $PSScriptRoot "Build-Prerequisites-CI.ps1")
+
+# سازگاری با نام قبلی — همان محتوای App
+$legacyZip = Join-Path $releaseDir "Anbarban-v3-Portable.zip"
+Copy-Item $appZip $legacyZip -Force
+Write-Host "OK (legacy name): $legacyZip"
