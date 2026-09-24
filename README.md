@@ -1,274 +1,176 @@
-# انباربان — سیستم انبار
+# انباربان — سیستم انبار (نسخه ۳)
 
-### نسخه ۳ — اپ ویندوزی (پرتابل 64-bit)
+<p align="center">
+  <img src="v3/Anbarban.Wpf/Assets/logo.png" alt="لوگو انباربان" width="120" />
+</p>
 
-**دانلود:** [Release v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) → **`Anbarban-v3-Portable.zip`**  
-Extract → **`شروع انباربان.bat`**
+<p align="center">
+  <strong>اپ ویندوزی فارسی · RTL · برای انبار روزمره — بدون Access روی PC انبار</strong>
+</p>
 
-سورس / توسعه: [`v3/README.md`](v3/README.md)
-
----
-
-# انباربان — سیستم انبار (Access 2010)
-
-> **نسخه جدید:** شمای ۷ جدول، ورود/خروج جدا، ثبت **دو مرحله‌ای**، تاریخ **شمسی**، فروشنده و بخش، قفل سند با **کد مدیر**. جزئیات: `docs/GAP_ANALYSIS.md`
-
-# سیستم ساده انبارداری
-
-<img alt="منوی اصلی سیستم انبارداری" src="docs/screenshots/01-home.png" width="720" />
-
-نرم‌افزار سبک و فارسی برای مدیریت روزمرهٔ انبار.  
-طراحی‌شده برای اپراتوری که ممکن است با کامپیوتر حرفه‌ای نباشد — همه کارها با **دکمه‌های واضح** انجام می‌شود.
+<p align="center">
+  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3">دانلود پرتابل v3.0.3</a>
+  ·
+  <a href="v3/README.md">راهنمای توسعه‌دهنده</a>
+  ·
+  <a href="release/RELEASE_NOTES_v3.0.3.md">یادداشت انتشار</a>
+</p>
 
 ---
 
-## این پروژه چه مشکلی را حل می‌کند؟
+## دانلود و اجرا (۲ دقیقه)
 
-در خیلی از انبارهای کوچک و متوسط، ثبت ورود و خروج هنوز با دفتر، اکسل پراکنده یا نرم‌افزارهای سنگین انجام می‌شود.
+| مرحله | کار |
+|--------|-----|
+| ۱ | از [Release v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) فایل **`Anbarban-v3-Portable.zip`** را بگیرید |
+| ۲ | Extract در هر پوشه (مثلاً `D:\Anbarban`) |
+| ۳ | دوبارکلیک **`شروع انباربان.bat`** |
 
-این سیستم یک مسیر ساده می‌دهد:
+**پیش‌نیاز (یک بار):** Windows 7+ · [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) · **Microsoft ACE OLEDB 12.0 (64-bit)**
 
-1. کالا را پیدا کن  
-2. ورود را ثبت کن  
-3. خروج / حواله را ثبت کن  
-4. موجودی را ببین  
-5. گزارش بگیر  
+اگر `Data\Inventory.accdb` نبود، با اولین اجرا (با ACE) معمولاً خودکار ساخته می‌شود؛ یا **`ساخت-پایگاه-داده.bat`** را بزنید.
 
-بدون درگیر شدن با جدول، ID، Query یا اصطلاحات فنی.
-
----
-
-## ویژگی‌های اصلی
-
-| قابلیت | توضیح |
-|---|---|
-| ثبت ورود کالا | پیش‌نویس → تأیید با فاکتور → **سپس** افزایش موجودی |
-| ثبت خروج / حواله | هر قلم **بخش** جدا؛ کنترل موجودی در ثبت نهایی |
-| فروشندگان و بخش‌ها | فهرست ثابت — بدون اشتباه تایپی |
-| مدیریت کالاها | موجودی فقط خواندنی |
-| جستجو و گزارش‌ها | ورود، خروج، فروشنده، بخش، حواله، گردش کالا |
-| مشاهده موجودی / کم‌موجودی | گزارش و فرم ساده |
-| سند نهایی | قفل + باز کردن با کد ۶ رقمی (`tools/generate_unlock_code.py`) |
-
-### جلوگیری از اشتباه کاربر
-
-- تعداد صفر یا منفی قبول نمی‌شود  
-- خروج بیش از موجودی مسدود می‌شود و پیام فارسی واضح نشان داده می‌شود  
-- خروج بدون شماره حواله مجاز نیست  
-- کالا بدون نام ثبت نمی‌شود  
-- موجودی به‌صورت دستی قابل تغییر نیست؛ فقط از مسیر ورود/خروج
+**بکاپ:** فقط `Data\Inventory.accdb` را کپی کنید.
 
 ---
 
-## دانلود نسخه آماده — انباربان v2.0 (Access 2010)
+## انباربان چیست؟
 
-**[GitHub Release v2.0.0](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v2.0.0)** — فایل **`Anbarban-v2.0-Access-2010.zip`**
+برای **انبار کوچک و متوسط** که می‌خواهد ورود، خروج، موجودی و گزارش را **با دکمه‌های واضح** انجام دهد — نه Excel پراکنده، نه ERP سنگین.
 
-همین ریپو: [`release/Anbarban-v2.0-Access-2010.zip`](release/Anbarban-v2.0-Access-2010.zip)
+| مسیر روزانه | در اپ |
+|-------------|--------|
+| کالا وارد شد | **ثبت ورود** → قلم‌ها → **ثبت نهایی** |
+| کالا خارج شد | **ثبت خروج / حواله** → بخش → **ثبت نهایی** |
+| چند تا داریم؟ | **موجودی انبار** / گزارش کم‌موجودی |
+| گزارش مدیر | **گزارش‌ها** → **گزارش‌گیری** (دکمه پایین صفحه) |
 
-### نصب (۴ قدم)
-
-1. ZIP را Extract کنید  
-2. **Microsoft Access 2010** نصب باشد  
-3. **`شروع-ساخت-دیتابیس.bat`** → ساخت `database\Inventory.accdb`  
-4. راهنما: [`release/راهنما-انباربان.txt`](release/راهنما-انباربان.txt)
-
-جزئیات: [`release/RELEASE_NOTES_v2.0.md`](release/RELEASE_NOTES_v2.0.md)
-
-### نسخه قدیمی پرتابل (مرورگر، بدون Access)
-
-[`release/Anbardari-v1.0-Windows.zip`](release/Anbardari-v1.0-Windows.zip) — [`RELEASE_NOTES_v1.0.md`](release/RELEASE_NOTES_v1.0.md)
+ثبت **دو مرحله‌ای** است: تا «ثبت نهایی» موجودی عوض نمی‌شود. سند نهایی با **کد ۶ حرفی مدیر** قابل بازگشت است (`tools/` داخل ZIP).
 
 ---
 
-## شروع سریع از خود Repository
+## تصاویر — نسخه ۳ (WPF)
 
-بدون نصب Access یا Python:
+### صفحهٔ خانه — کارهای هر روز و تعریف پایه
 
-1. پوشه `portable` را روی ویندوز کپی کنید  
-2. روی `شروع.bat` دوبار کلیک کنید  
+تم تیره، کارت‌های بزرگ، آیکون‌های Icons8، کاملاً **راست‌به‌چپ**.
 
-برنامه باز می‌شود و آماده کار است.
+<img src="docs/screenshots/v3/01-home.png" alt="صفحه خانه انباربان v3" width="900" />
 
-> داده در `portable/data/inventory.json` ذخیره می‌شود.
+| در تصویر | توضیح |
+|---------|--------|
+| **هر روز** | ورود، خروج، موجودی، گزارش — یک کلیک |
+| **یک‌بار تعریف کنید** | فروشنده، بخش، کالا |
+| هدر | نام پایگاه (`Inventory.accdb`) + منوی همبرگر |
 
-آموزش کوتاه: [`docs/TUTORIAL.md`](docs/TUTORIAL.md)
+### جستجوی زنده و تقویم شمسی
 
----
+در فرم‌های ورود/خروج و گزارش: **SearchCombo** (تایپ + پیشنهاد کوتاه) و **JalaliDatePicker**.
 
-## تصاویر محیط برنامه
+### ثبت نهایی و پیام‌ها
 
-### منوی اصلی
-دکمه‌های بزرگ و فارسی برای همه کارهای روزمره.
+بعد از تأیید: صفحهٔ موفقیت با تیک و دکمه‌های «ثبت جدید / خانه» — بدون MessageBox خاکستری ویندوز.
 
-<img alt="منوی اصلی" src="docs/screenshots/01-home.png" width="720" />
-
-### مدیریت کالاها
-تعریف کالا بدون دستکاری موجودی.
-
-<img alt="مدیریت کالاها" src="docs/screenshots/02-products.png" width="720" />
-
-### ثبت ورود کالا
-اول ذخیره سند، بعد افزودن چند قلم کالا.
-
-<img alt="ثبت ورود کالا" src="docs/screenshots/03-in-doc.png" width="720" />
-
-### مشاهده موجودی انبار
-وضعیت به زبان ساده: **موجود** یا **نیاز به تأمین**.
-
-<img alt="موجودی انبار" src="docs/screenshots/04-stock.png" width="720" />
-
-### جستجوی کالا
-با چند حرف از نام یا کد.
-
-<img alt="جستجوی کالا" src="docs/screenshots/05-search.png" width="720" />
-
-### کنترل موجودی هنگام خروج
-اگر موجودی کافی نباشد، ثبت انجام نمی‌شود.
-
-<img alt="خطای کمبود موجودی" src="docs/screenshots/06-out-blocked.png" width="720" />
-
-### ثبت خروج موفق
-پس از تأیید موجودی، خروج ثبت و موجودی کم می‌شود.
-
-<img alt="ثبت خروج" src="docs/screenshots/07-out-ok.png" width="720" />
-
-### گزارش ورود و خروج
-فیلتر ساده + نتیجه خوانا با برچسب «ورود / خروج».
-
-<img alt="گزارش ورود و خروج" src="docs/screenshots/08-inout-report.png" width="720" />
+> اسکرین‌شات‌های بیشتر: پوشه [`docs/screenshots/v3/`](docs/screenshots/v3/)
 
 ---
 
-## ساختار Repository
+## ویژگی‌های کلیدی (v3)
+
+| قابلیت | جزئیات |
+|--------|--------|
+| ورود کالا | فاکتور، فروشنده، چند قلم، تأیید قبل از افزایش موجودی |
+| خروج / حواله | شماره حواله، بخش هر قلم، کنترل «موجودی کافی نیست» |
+| موجودی | فقط از مسیر سند — دستی روی عدد موجودی نیست |
+| گزارش | ورود+خروج، موجودی، کم‌موجودی، فروشنده، بخش، حواله، گردش کالا |
+| UI | فارسی محاوره‌ای، RTL، منو از راست، اسکرول و دکمه‌های اصلی ثابت |
+| داده | `Inventory.accdb` — همان منطق ۸ جدول نسل قبل |
+
+---
+
+## ساخت از سورس (توسعه‌دهنده)
+
+```bat
+cd v3
+dotnet build Anbarban.sln -c Release
+dotnet test Anbarban.Tests\Anbarban.Tests.csproj -c Release
+```
+
+خروجی: `v3\Anbarban.Wpf\bin\Release\net48\Anbarban.exe`
+
+پرتابل محلی:
+
+```bat
+v3\scripts\Make-Portable.bat
+```
+
+→ `release\Anbarban-v3-Portable.zip`
+
+تست UI (اختیاری):
+
+```bat
+cd v3\Anbarban.Wpf\bin\Release\net48
+set ANBARBAN_UI_TEST=1
+Anbarban.exe --ui-test
+```
+
+---
+
+## ساختار ریپو
 
 ```text
-portable/                 نسخه پرتابل آماده اجرا (ویندوز)
-  شروع.bat / Start.bat
-  app/                    رابط و منطق برنامه
-  data/                   فایل داده
+v3/                    ★ اپ WPF + تست‌ها (نسخه فعلی)
+  Anbarban.Wpf/        رابط و منطق
+  Anbarban.Tests/      xUnit — posting و گزارش
+  scripts/             پرتابل، اسکرین‌شات README
 
-build/                    ساخت خودکار نسخه Access 2010
-  ساخت-دیتابیس.bat
-  Build-Inventory.vbs
-
-database/                 خروجی Inventory.accdb (بعد از ساخت)
-docs/                     راهنما، UX، شما، آموزش، اسکرین‌شات
-vba/                      ماژول‌ها و کد فرم‌های Access
-forms/                    مشخصات فرم‌های Access
-queries/                  کوئری‌های Access
-sql/                      ساختار جداول و روابط
-tests/                    تست منطق موجودی
+release/               ZIPهای آماده و RELEASE_NOTES
+database/              محل Inventory.accdb بعد از ساخت (Access)
+build/                 ساخت دیتابیس نسل Access
+docs/                  مستندات + screenshots/
+portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 ```
 
 ---
 
-## نسخه Microsoft Access 2010 (اختیاری)
+## نسخه‌های قبلی (آرشیو)
 
-اگر روی سیستم **Microsoft Access 2010** دارید:
+| نسخه | مخاطب | دانلود |
+|------|--------|--------|
+| **v3** | **پیشنهاد — WPF پرتابل** | [v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) |
+| v2.0 | داخل Microsoft Access 2010 | [v2.0.0](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v2.0.0) · [`release/Anbarban-v2.0-Access-2010.zip`](release/Anbarban-v2.0-Access-2010.zip) |
+| v1.0 | پرتابل مرورگر (legacy) | [`release/Anbardari-v1.0-Windows.zip`](release/Anbardari-v1.0-Windows.zip) |
 
-1. وارد پوشه `build` شوید  
-2. روی `ساخت-دیتابیس.bat` دوبار کلیک کنید  
-3. فایل `database/Inventory.accdb` ساخته می‌شود  
+### تصاویر نسخهٔ اول (رابط Access / HTA — آرشیو)
 
-جزئیات:
+<img alt="منوی نسخه اول" src="docs/screenshots/01-home.png" width="720" />
 
-- [`docs/AUTO_BUILD.md`](docs/AUTO_BUILD.md)  
-- [`docs/BUILD_GUIDE.md`](docs/BUILD_GUIDE.md)  
-- [`docs/SCHEMA.md`](docs/SCHEMA.md)
-
-### شمای داده
-
-- `Products` — کالاها  
-- `Documents` — اسناد ورود/خروج  
-- `DocumentItems` — اقلام هر سند  
-
-روابط با Referential Integrity فعال است.
-
----
-
-## منطق کسب‌وکار
-
-| عملیات | مقدار داخلی | اثر روی موجودی |
-|---|---|---|
-| ورود | `IN` | افزایش `CurrentStock` |
-| خروج | `OUT` | کاهش `CurrentStock` |
-
-کاربر در رابط فقط «ورود» و «خروج» را می‌بیند.  
-مقادیر فنی `IN/OUT` برای ذخیره داخلی هستند و در UI نمایش داده نمی‌شوند.
-
----
-
-## مخاطب طراحی
-
-این پروژه یک ERP یا نرم‌افزار حسابداری پیچیده نیست.
-
-مخاطب:
-
-- مسئول انبار  
-- اپراتور انبار  
-- کسب‌وکار کوچک/متوسط  
-
-اصل طراحی:
-
-**سادگی · وضوح · کم بودن مراحل · جلوگیری از اشتباه**
-
-جزئیات تجربه کاربری: [`docs/OPERATOR_UX.md`](docs/OPERATOR_UX.md)
-
----
-
-## سازگاری و اجرا
-
-| محیط | وضعیت |
-|---|---|
-| ویندوز + نسخه پرتابل (`شروع.bat`) | پیشنهادی — بدون نصب اضافه |
-| ویندوز + Microsoft Access 2010 | پشتیبانی کامل برای مسیر `.accdb` |
-| سیستم ضعیف (رم حدود ۴ گیگ) | طراحی سبک و کم‌هزینه |
-
----
-
-## تست
-
-منطق موجودی با تست خودکار پوشش داده شده است:
-
-```bash
-python3 tests/test_stock_logic.py
-```
-
-سناریوها شامل ورود، خروج، جلوگیری از موجودی منفی، حواله اجباری، چند قلم در سند و اصلاح موجودی پس از حذف/ویرایش است.
+گالری کامل UI قدیم: `docs/screenshots/01-home.png` … `08-inout-report.png`
 
 ---
 
 ## مستندات
 
-| فایل | موضوع |
-|---|---|
-| [`docs/TUTORIAL.md`](docs/TUTORIAL.md) | آموزش سریع کاربر |
-| [`docs/OPERATOR_UX.md`](docs/OPERATOR_UX.md) | اصول رابط اپراتور |
-| [`docs/AUTO_BUILD.md`](docs/AUTO_BUILD.md) | ساخت خودکار Access |
-| [`docs/BUILD_GUIDE.md`](docs/BUILD_GUIDE.md) | ساخت دستی Access 2010 |
-| [`docs/SCHEMA.md`](docs/SCHEMA.md) | ساختار جداول |
-| [`docs/TEST_REPORT.md`](docs/TEST_REPORT.md) | نتیجه تست منطق |
+| سند | موضوع |
+|-----|--------|
+| [`v3/README.md`](v3/README.md) | معماری v3، ACE، پرتابل |
+| [`docs/TUTORIAL.md`](docs/TUTORIAL.md) | آموزش کاربر |
+| [`docs/OPERATOR_UX.md`](docs/OPERATOR_UX.md) | اصول UX اپراتور |
+| [`docs/MANAGER_UNLOCK.md`](docs/MANAGER_UNLOCK.md) | کد مدیر |
+| [`docs/SCHEMA.md`](docs/SCHEMA.md) | جداول |
 
 ---
 
-## مجوز استفاده
+## مخاطب و اصل طراحی
 
-این Repository برای استفاده عملی در انبار و توسعه کنترل‌شده آماده شده است.  
-قبل از استفاده در محیط واقعی، یک بار با داده نمونه تست کنید.
+مسئول انبار و اپراتوری که **حرفه‌ای کامپیوتر نیست** — ساده، واضح، کم‌کلیک، جلوگیری از اشتباه (موجودی منفی، خروج بدون حواله، ثبت دوباره).
 
 ---
 
-## جمع‌بندی
+## مجوز و استفاده
 
-اگر فقط می‌خواهید همین امروز کار را شروع کنید:
+برای استفاده در انبار واقعی و توسعهٔ کنترل‌شده. قبل از تولید، یک بار با دادهٔ نمونه یا کپی DB تست کنید.
 
-```text
-portable → شروع.bat
-```
+---
 
-اگر نسخه Access 2010 می‌خواهید:
-
-```text
-build → ساخت-دیتابیس.bat → database/Inventory.accdb
-```
+<p align="center"><sub>نسخهٔ README برای <strong>انباربان v3</strong> — آخرین پرتابل: <strong>v3.0.3</strong></sub></p>
