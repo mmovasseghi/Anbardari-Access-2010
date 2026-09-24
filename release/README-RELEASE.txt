@@ -1,3 +1,11 @@
+انباربان — نسخه ۳ پرتابل (WPF 64-bit) — پیشنهاد
+
+دانلود: GitHub Release v3.0.3 → Anbarban-v3-Portable.zip
+شروع: شروع انباربان.bat
+راهنما: release/RELEASE_NOTES_v3.0.3.md
+
+---
+
 انباربان — نسخه ۲.۰ (Access 2010)
 
 دانلود: Anbarban-v2.0-Access-2010.zip

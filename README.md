@@ -2,7 +2,7 @@
 
 ### نسخه ۳ — اپ ویندوزی (پرتابل 64-bit)
 
-**دانلود:** [Release v3.0.2](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.2) → **`Anbarban-v3-Portable.zip`**  
+**دانلود:** [Release v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) → **`Anbarban-v3-Portable.zip`**  
 Extract → **`شروع انباربان.bat`**
 
 سورس / توسعه: [`v3/README.md`](v3/README.md)

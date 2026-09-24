@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Anbarban.Data;
+using Anbarban.Services;
 
 namespace Anbarban.Views
 {
@@ -22,6 +23,7 @@ namespace Anbarban.Views
             {
                 if (_stockMode)
                     BtnNew.Visibility = BtnEdit.Visibility = Visibility.Collapsed;
+                LiveComboSearch.AttachTextBox(TxtSearch, LoadData);
                 LoadData();
             };
         }
@@ -35,7 +37,7 @@ namespace Anbarban.Views
                     items = items.Where(p => p.CurrentStock <= p.MinimumStock).ToList();
                 Grid.ItemsSource = items;
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "انباربان"); }
+            catch (Exception ex) { AnbarbanDialog.Error(ex.Message, Window.GetWindow(this)); }
         }
 
         private void OnSearch(object sender, RoutedEventArgs e) => LoadData();

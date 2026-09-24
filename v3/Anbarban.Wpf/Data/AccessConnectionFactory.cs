@@ -6,22 +6,17 @@ namespace Anbarban.Data
 {
     public sealed class AccessConnectionFactory
     {
-        private readonly string _dbPath;
-        private readonly string _connectionString;
+        public string DatabasePath => AccessConfig.GetDatabasePath();
 
-        public string DatabasePath => _dbPath;
+        public AccessConnectionFactory() => EnsureReady(DatabasePath);
 
-        public AccessConnectionFactory()
+        private static void EnsureReady(string path)
         {
-            _dbPath = AccessConfig.GetDatabasePath();
-            if (!File.Exists(_dbPath) || !DatabaseBootstrap.SchemaExists(_dbPath))
+            if (!File.Exists(path) || !DatabaseBootstrap.SchemaExists(path))
             {
-                if (!DatabaseBootstrap.EnsureDatabase(_dbPath))
-                {
-                    throw new FileNotFoundException(BuildHelpMessage(_dbPath));
-                }
+                if (!DatabaseBootstrap.EnsureDatabase(path))
+                    throw new FileNotFoundException(BuildHelpMessage(path));
             }
-            _connectionString = AccessConfig.BuildConnectionString(_dbPath);
         }
 
         public static string BuildHelpMessage(string path) =>
@@ -35,7 +30,9 @@ namespace Anbarban.Data
 
         public OleDbConnection Open()
         {
-            var c = new OleDbConnection(_connectionString);
+            var path = DatabasePath;
+            EnsureReady(path);
+            var c = new OleDbConnection(AccessConfig.BuildConnectionString(path));
             c.Open();
             return c;
         }

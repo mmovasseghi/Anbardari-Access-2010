@@ -16,7 +16,7 @@ namespace Anbarban.Views.Dialogs
             InitializeComponent();
             _docId = header.Id;
             TxtSummary.Text =
-                $"شماره سند: {header.DocumentNumber}\nشماره حواله: {header.DeliveryNumber}\n" +
+                $"شماره حواله: {header.DeliveryNumber}\n" +
                 $"تاریخ: {JalaliCalendar.Format(header.DocumentDate)}";
             Grid.ItemsSource = lines.Select(l => new
             {
@@ -35,12 +35,20 @@ namespace Anbarban.Views.Dialogs
             var err = AppServices.Post.PostOutgoing(_docId);
             if (err != null)
             {
-                MessageBox.Show(err, "انباربان", MessageBoxButton.OK, MessageBoxImage.Warning);
+                AnbarbanDialog.Warn(err, this);
                 return;
             }
             Posted = true;
-            MessageBox.Show("خروج ثبت نهایی شد.", "انباربان", MessageBoxButton.OK, MessageBoxImage.Information);
-            Close();
+            if (UiTestMode.SuppressSuccessPopups)
+            {
+                Close();
+                return;
+            }
+            ReviewContent.Visibility = Visibility.Collapsed;
+            PanelSuccess.Visibility = Visibility.Visible;
+            TxtSuccessDetail.Text = "حواله خروج در سیستم ثبت شد.";
         }
+
+        private void OnSuccessDone(object sender, RoutedEventArgs e) => Close();
     }
 }

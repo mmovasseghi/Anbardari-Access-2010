@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using Anbarban.Models;
@@ -13,11 +14,16 @@ namespace Anbarban.Views.Dialogs
         public ConfirmIncomingWindow(IncomingHeader header, IList<IncomingLine> lines)
         {
             InitializeComponent();
+            if (header == null)
+                throw new ArgumentNullException(nameof(header));
+            if (lines == null)
+                throw new ArgumentNullException(nameof(lines));
             _docId = header.Id;
+            var supplier = string.IsNullOrWhiteSpace(header.SupplierName) ? "—" : header.SupplierName;
             TxtSummary.Text =
                 $"شماره سند: {header.DocumentNumber}\nشماره فاکتور: {header.InvoiceNumber}\n" +
-                $"تاریخ: {JalaliCalendar.Format(header.DocumentDate)}\nفروشنده: {header.SupplierName}";
-            Grid.ItemsSource = lines;
+                $"تاریخ: {JalaliCalendar.Format(header.DocumentDate)}\nفروشنده: {supplier}";
+            LinesGrid.ItemsSource = lines;
         }
 
         private void OnBack(object sender, RoutedEventArgs e) => Close();
@@ -27,12 +33,20 @@ namespace Anbarban.Views.Dialogs
             var err = AppServices.Post.PostIncoming(_docId);
             if (err != null)
             {
-                MessageBox.Show(err, "انباربان", MessageBoxButton.OK, MessageBoxImage.Warning);
+                AnbarbanDialog.Warn(err, this);
                 return;
             }
             Posted = true;
-            MessageBox.Show("ورود کالا ثبت نهایی شد.", "انباربان", MessageBoxButton.OK, MessageBoxImage.Information);
-            Close();
+            if (UiTestMode.SuppressSuccessPopups)
+            {
+                Close();
+                return;
+            }
+            ReviewContent.Visibility = Visibility.Collapsed;
+            PanelSuccess.Visibility = Visibility.Visible;
+            TxtSuccessDetail.Text = "سند ورود در سیستم ثبت شد.";
         }
+
+        private void OnSuccessDone(object sender, RoutedEventArgs e) => Close();
     }
 }

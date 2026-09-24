@@ -23,7 +23,7 @@
 | مورد | توضیح |
 |------|--------|
 | .NET Framework **4.8** | [دانلود مایکروسافت](https://dotnet.microsoft.com/download/dotnet-framework/net48) |
-| **ACE OLEDB 12.0** | Access Database Engine 2010 Redistributable — معمولاً **x86** روی PCهای قدیمی |
+| **ACE OLEDB 12.0** | Access Database Engine 2010 Redistributable — **64-bit** (هم‌تراز build x64) |
 | `Inventory.accdb` | در پوشه `Data` کنار exe |
 
 ## ساخت روی ویندوز (توسعه‌دهنده)

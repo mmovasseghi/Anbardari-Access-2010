@@ -1,6 +1,9 @@
 using System;
 using System.Windows;
+using System.Windows.Markup;
 using Anbarban.Data;
+using Anbarban.Services;
+using Anbarban.Views;
 
 namespace Anbarban
 {
@@ -8,20 +11,42 @@ namespace Anbarban
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            DispatcherUnhandledException += (_, args) =>
+            {
+                UiError.Show(args.Exception, "یک خطا پیش آمد؛ برنامه باز می‌ماند.");
+                args.Handled = true;
+            };
+            AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            {
+                if (args.ExceptionObject is Exception ex)
+                    UiError.Show(ex, "برنامه با خطا بسته می‌شود.");
+            };
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage("fa-IR")));
+
             base.OnStartup(e);
+
+            if (string.Equals(Environment.GetEnvironmentVariable("ANBARBAN_LIVE_TEST"), "1", StringComparison.Ordinal))
+                return;
+
             try
             {
                 var path = AccessConfig.GetDatabasePath();
                 if (!DatabaseBootstrap.EnsureDatabase(path))
                 {
-                    MessageBox.Show(AccessConnectionFactory.BuildHelpMessage(path), "انباربان",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    AnbarbanDialog.Warn(AccessConnectionFactory.BuildHelpMessage(path), null, "راه‌اندازی پایگاه");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "انباربان", MessageBoxButton.OK, MessageBoxImage.Warning);
+                AnbarbanDialog.Error(ex.Message, null);
             }
+
+            var main = new MainWindow();
+            MainWindow = main;
+            main.Show();
         }
     }
 }

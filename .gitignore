@@ -12,3 +12,18 @@ Desktop.ini
 # OS
 .DS_Store
 __pycache__/
+
+# .NET build output
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Portable build artifacts (ZIP on GitHub Releases)
+release/Anbarban-v3-Portable/
+release/Anbarban-v3-Portable.zip
+
+# Local test logs next to exe
+**/ui-test-log.txt
+**/error-log.txt
+**/last-error.txt

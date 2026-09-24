@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style x:Key="UiIconTile" TargetType="Image">
+    <Setter Property="Width" Value="36"/>
+    <Setter Property="Height" Value="36"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+  </Style>
+
+  <Style x:Key="UiIconNav" TargetType="Image">
+    <Setter Property="Width" Value="30"/>
+    <Setter Property="Height" Value="30"/>
+    <Setter Property="Margin" Value="14,0,0,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+  </Style>
+
+  <Style x:Key="UiIconSection" TargetType="Image">
+    <Setter Property="Width" Value="26"/>
+    <Setter Property="Height" Value="26"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+  </Style>
+
+  <Style x:Key="UiIconLabel" TargetType="Image">
+    <Setter Property="Width" Value="22"/>
+    <Setter Property="Height" Value="22"/>
+    <Setter Property="Margin" Value="0,0,10,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+  </Style>
+
+</ResourceDictionary>

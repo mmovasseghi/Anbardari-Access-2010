@@ -9,11 +9,21 @@ namespace Anbarban.Data
         private readonly AccessConnectionFactory _db;
         public DepartmentRepository(AccessConnectionFactory db) => _db = db;
 
-        public IList<IdName> ListActive()
+        public IList<IdName> ListActive() => SearchActive(null);
+
+        public IList<IdName> SearchActive(string? term, int max = 35)
         {
             var list = new List<IdName>();
             using var conn = _db.Open();
-            using var cmd = new OleDbCommand("SELECT ID, DepartmentName FROM Departments WHERE IsActive=True ORDER BY DepartmentName", conn);
+            using var cmd = conn.CreateCommand();
+            var sql = "SELECT TOP " + max + " ID, DepartmentName FROM Departments WHERE IsActive=True";
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                sql += " AND DepartmentName LIKE ?";
+                cmd.Parameters.Add(OleDbUtil.P("@n", OleDbUtil.LikePrefix(term)));
+            }
+            sql += " ORDER BY DepartmentName";
+            cmd.CommandText = sql;
             using var r = cmd.ExecuteReader();
             while (r.Read())
                 list.Add(new IdName { Id = r.GetInt32(0), Name = r.IsDBNull(1) ? "" : r.GetString(1) });
@@ -27,7 +37,7 @@ namespace Anbarban.Data
             using var cmd = new OleDbCommand("SELECT ID, DepartmentName, IsActive FROM Departments ORDER BY DepartmentName", conn);
             using var r = cmd.ExecuteReader();
             while (r.Read())
-                list.Add((r.GetInt32(0), r.GetString(1), OleDbUtil.ToBool(r.GetValue(2))));
+                list.Add((r.GetInt32(0), r.IsDBNull(1) ? "" : r.GetString(1), OleDbUtil.ToBool(r.GetValue(2))));
             return list;
         }
 

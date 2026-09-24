@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Anbarban.Services;
 
 namespace Anbarban.Views
 {
@@ -25,11 +26,11 @@ namespace Anbarban.Views
         {
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
-                MessageBox.Show("نام کالا الزامی است.", "انباربان"); return;
+                AnbarbanDialog.Warn("نام کالا الزامی است.", this); return;
             }
             if (!int.TryParse(TxtMin.Text, out var m) || m < 0)
             {
-                MessageBox.Show("حداقل موجودی نامعتبر است.", "انباربان"); return;
+                AnbarbanDialog.Warn("حداقل موجودی نامعتبر است.", this); return;
             }
             MinimumStock = m;
             DialogResult = true;

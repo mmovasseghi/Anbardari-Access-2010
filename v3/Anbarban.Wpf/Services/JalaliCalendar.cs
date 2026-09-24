@@ -1,13 +1,34 @@
 using System;
+using System.Globalization;
+
 namespace Anbarban.Services
 {
-    /// <summary>تبدیل شمسی/میلادی — همان منطق v2 برای اپراتور.</summary>
+    /// <summary>تاریخ شمسی با تقویم رسمی .NET (PersianCalendar).</summary>
     public static class JalaliCalendar
     {
+        private static readonly PersianCalendar Pc = new();
+
+        public static string[] MonthNames { get; } =
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+        };
+
+        public static string[] WeekDayShort { get; } = { "ش", "ی", "د", "س", "چ", "پ", "ج" };
+
+        public static DateTime Today => DateTime.Today;
+
+        public static void ToJalali(DateTime g, out int jy, out int jm, out int jd)
+        {
+            jy = Pc.GetYear(g);
+            jm = Pc.GetMonth(g);
+            jd = Pc.GetDayOfMonth(g);
+        }
+
         public static string Format(DateTime? g)
         {
             if (g == null) return "";
-            GregorianToJalali(g.Value.Year, g.Value.Month, g.Value.Day, out var jy, out var jm, out var jd);
+            ToJalali(g.Value.Date, out var jy, out var jm, out var jd);
             return $"{jy:0000}/{jm:00}/{jd:00}";
         }
 
@@ -15,55 +36,42 @@ namespace Anbarban.Services
         {
             gregorian = default;
             if (string.IsNullOrWhiteSpace(text)) return false;
-            var parts = text.Trim().Replace('-', '/').Split('/');
+            var parts = text.Trim().Replace('-', '/').Replace('\\', '/').Split('/');
             if (parts.Length != 3) return false;
-            if (!int.TryParse(parts[0], out var jy) || !int.TryParse(parts[1], out var jm) || !int.TryParse(parts[2], out var jd))
+            if (!int.TryParse(parts[0].Trim(), out var jy) ||
+                !int.TryParse(parts[1].Trim(), out var jm) ||
+                !int.TryParse(parts[2].Trim(), out var jd))
                 return false;
-            if (jy < 1300 || jy > 1500 || jm < 1 || jm > 12 || jd < 1 || jd > 31) return false;
-            JalaliToGregorian(jy, jm, jd, out var gy, out var gm, out var gd);
-            gregorian = new DateTime(gy, gm, gd);
-            return true;
+            return TryJalaliToGregorian(jy, jm, jd, out gregorian);
         }
 
-        private static void GregorianToJalali(int gy, int gm, int gd, out int jy, out int jm, out int jd)
+        public static bool TryJalaliToGregorian(int jy, int jm, int jd, out DateTime gregorian)
         {
-            int[] g_d_m = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-            int gy2 = gy > 1600 ? gy - 1600 : gy - 621;
-            int days = 365 * gy2 + (gy2 + 3) / 4 - (gy2 + 99) / 100 + (gy2 + 399) / 400 - 80 + gd;
-            days += gm > 2 ? g_d_m[gm - 1] + 1 : g_d_m[gm - 1];
-            jy = -979 + 33 * (days / 12053);
-            days %= 12053;
-            jy += 4 * (days / 1461);
-            days %= 1461;
-            if (days > 365) { jy += (days - 1) / 365; days = (days - 1) % 365; }
-            if (days < 186) { jm = 1 + days / 31; jd = 1 + days % 31; }
-            else { jm = 7 + (days - 186) / 30; jd = 1 + (days - 186) % 30; }
-        }
-
-        private static void JalaliToGregorian(int jy, int jm, int jd, out int gy, out int gm, out int gd)
-        {
-            jy -= 979; jm -= 1; jd -= 1;
-            int days = 365 * jy + (jy / 33) * 8 + ((jy % 33) + 3) / 4;
-            days += jm < 7 ? jm * 31 : (jm - 7) * 30 + 186;
-            days += jd + 79;
-            gy = 1600 + 400 * (days / 146097);
-            days %= 146097;
-            bool leap = true;
-            if (days >= 36525)
+            gregorian = default;
+            try
             {
-                days--;
-                gy += 100 * (days / 36524);
-                days %= 36524;
-                if (days >= 365) days++; else leap = false;
+                if (jy < 1300 || jy > 1499 || jm < 1 || jm > 12 || jd < 1) return false;
+                var max = Pc.GetDaysInMonth(jy, jm);
+                if (jd > max) return false;
+                gregorian = Pc.ToDateTime(jy, jm, jd, 0, 0, 0, 0).Date;
+                return true;
             }
-            gy += 4 * (days / 1461);
-            days %= 1461;
-            if (days >= 366) { leap = false; days--; gy += days / 365; days %= 365; }
-            int[] sal_a = { 0, 31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-            gm = 0;
-            while (gm < 12 && days >= sal_a[gm + 1]) { days -= sal_a[gm + 1]; gm++; }
-            gm++;
-            gd = days + 1;
+            catch
+            {
+                return false;
+            }
         }
+
+        public static int GetDaysInMonth(int jy, int jm) => Pc.GetDaysInMonth(jy, jm);
+
+        /// <summary>ستون ۰=شنبه … ۶=جمعه (برای گرید تقویم).</summary>
+        public static int WeekColumnIndex(DateTime gregorian)
+        {
+            var dow = Pc.GetDayOfWeek(gregorian);
+            return ((int)dow + 1) % 7;
+        }
+
+        public static int WeekColumnIndex(int jy, int jm, int jd) =>
+            WeekColumnIndex(Pc.ToDateTime(jy, jm, jd, 0, 0, 0, 0));
     }
 }

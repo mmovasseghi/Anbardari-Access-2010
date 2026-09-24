@@ -15,7 +15,7 @@ namespace Anbarban.Views
         private void OnBack(object sender, RoutedEventArgs e)
         {
             if (Window.GetWindow(this) is MainWindow w)
-                w.NavigateTo(new HomePage());
+                w.NavigateTo(new HomePage(), "خانه", "");
         }
     }
 }

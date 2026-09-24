@@ -8,6 +8,7 @@ namespace Anbarban.Data
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
+        public override string ToString() => Name;
         public string Code { get; set; } = "";
         public string Unit { get; set; } = "";
         public int CurrentStock { get; set; }
@@ -21,7 +22,51 @@ namespace Anbarban.Data
 
         public ProductRepository(AccessConnectionFactory db) => _db = db;
 
-        public IList<ProductRow> Search(string? term, int max = 200)
+        public ProductRow? GetById(int id)
+        {
+            if (id <= 0) return null;
+            using var conn = _db.Open();
+            using var cmd = new OleDbCommand(
+                @"SELECT ID, ProductName, ProductCode, Unit, CurrentStock, MinimumStock, IsActive
+                  FROM Products WHERE ID=?", conn);
+            cmd.Parameters.Add(OleDbUtil.P("@id", id));
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+            return new ProductRow
+            {
+                Id = r.GetInt32(0),
+                Name = r.IsDBNull(1) ? "" : r.GetString(1),
+                Code = r.IsDBNull(2) ? "" : r.GetString(2),
+                Unit = r.IsDBNull(3) ? "" : r.GetString(3),
+                CurrentStock = r.IsDBNull(4) ? 0 : Convert.ToInt32(r.GetValue(4)),
+                MinimumStock = r.IsDBNull(5) ? 0 : Convert.ToInt32(r.GetValue(5)),
+                IsActive = OleDbUtil.ToBool(r.GetValue(6))
+            };
+        }
+
+        public ProductRow? GetByCode(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return null;
+            using var conn = _db.Open();
+            using var cmd = new OleDbCommand(
+                @"SELECT ID, ProductName, ProductCode, Unit, CurrentStock, MinimumStock, IsActive
+                  FROM Products WHERE ProductCode=?", conn);
+            cmd.Parameters.Add(OleDbUtil.P("@c", code.Trim()));
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+            return new ProductRow
+            {
+                Id = r.GetInt32(0),
+                Name = r.IsDBNull(1) ? "" : r.GetString(1),
+                Code = r.IsDBNull(2) ? "" : r.GetString(2),
+                Unit = r.IsDBNull(3) ? "" : r.GetString(3),
+                CurrentStock = r.IsDBNull(4) ? 0 : Convert.ToInt32(r.GetValue(4)),
+                MinimumStock = r.IsDBNull(5) ? 0 : Convert.ToInt32(r.GetValue(5)),
+                IsActive = OleDbUtil.ToBool(r.GetValue(6))
+            };
+        }
+
+        public IList<ProductRow> Search(string? term, int max = 40)
         {
             var list = new List<ProductRow>();
             using var conn = _db.Open();
@@ -31,8 +76,9 @@ namespace Anbarban.Data
             if (!string.IsNullOrWhiteSpace(term))
             {
                 sql += " AND (ProductName LIKE ? OR ProductCode LIKE ?)";
-                cmd.Parameters.AddWithValue("@p1", "%" + term.Trim() + "%");
-                cmd.Parameters.AddWithValue("@p2", "%" + term.Trim() + "%");
+                var like = OleDbUtil.LikePrefix(term);
+                cmd.Parameters.Add(OleDbUtil.P("@p1", like));
+                cmd.Parameters.Add(OleDbUtil.P("@p2", like));
             }
             sql += " ORDER BY ProductName";
             cmd.CommandText = sql;
@@ -47,7 +93,7 @@ namespace Anbarban.Data
                     Unit = r.IsDBNull(3) ? "" : r.GetString(3),
                     CurrentStock = r.IsDBNull(4) ? 0 : Convert.ToInt32(r.GetValue(4)),
                     MinimumStock = r.IsDBNull(5) ? 0 : Convert.ToInt32(r.GetValue(5)),
-                    IsActive = !r.IsDBNull(6) && r.GetBoolean(6)
+                    IsActive = OleDbUtil.ToBool(r.GetValue(6))
                 });
             }
             return list;

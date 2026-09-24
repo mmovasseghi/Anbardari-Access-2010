@@ -1,53 +1,130 @@
 <Page x:Class="Anbarban.Views.ReportsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
-  <Grid Margin="24">
+      xmlns:ctrl="clr-namespace:Anbarban.Controls"
+      Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}"
+      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+  <Grid Margin="16">
     <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <TextBlock Text="جستجو و گزارش‌ها" Style="{StaticResource PageTitle}"/>
-    <Grid Grid.Row="1" Margin="0,16,0,12">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="*"/>
-      </Grid.ColumnDefinitions>
-      <StackPanel>
-        <TextBlock Text="نوع گزارش" Foreground="{StaticResource BrushMuted}"/>
-        <ComboBox x:Name="CboType" Height="32" Margin="0,4,0,8" SelectedIndex="0">
-          <ComboBoxItem Content="ورود و خروج"/>
-          <ComboBoxItem Content="موجودی انبار"/>
-          <ComboBoxItem Content="کم‌موجودی"/>
-          <ComboBoxItem Content="بر اساس فروشنده"/>
-          <ComboBoxItem Content="بر اساس بخش"/>
-          <ComboBoxItem Content="بر اساس حواله"/>
-          <ComboBoxItem Content="گردش یک کالا"/>
-        </ComboBox>
-        <TextBlock Text="از تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
-        <TextBox x:Name="TxtFromJ" Height="32" Margin="0,4,0,8"/>
-        <TextBlock Text="تا تاریخ شمسی" Foreground="{StaticResource BrushMuted}"/>
-        <TextBox x:Name="TxtToJ" Height="32" Margin="0,4,0,8"/>
+
+    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,8">
+          <TextBlock Text="گزارش‌ها" Style="{StaticResource PageTitle}"/>
+          <TextBlock Style="{StaticResource HintText}"
+                     Text="نوع گزارش را انتخاب کنید، در صورت نیاز فیلتر را پر کنید، بعد پایین صفحه «گزارش‌گیری» را بزنید."/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource SummaryBar}" Margin="0,0,0,8">
+          <TextBlock x:Name="TxtSummary" Foreground="{StaticResource BrushText}" FontSize="14"
+                     Text="هنوز گزارشی نگرفته‌اید؛ «گزارش‌گیری» را بزنید."/>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="0,0,0,8" FlowDirection="RightToLeft">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Border Style="{StaticResource CardPanel}" Padding="8" Margin="0">
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="4,0,4,8">
+                <Image Source="/Assets/Icons/reports.png" Style="{StaticResource UiIconSection}"/>
+                <TextBlock Text="نوع گزارش" Style="{StaticResource SectionHeaderText}" Margin="8,0,0,0"/>
+              </StackPanel>
+              <ListBox x:Name="LstReportType" MaxHeight="220"
+                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+                       ItemContainerStyle="{StaticResource ReportTypeListItem}"
+                       SelectionChanged="OnReportTypeChanged">
+                <ListBoxItem Tag="0" Content="ورود و خروج (همه)"/>
+                <ListBoxItem Tag="1" Content="موجودی انبار"/>
+                <ListBoxItem Tag="2" Content="کم‌موجودی"/>
+                <ListBoxItem Tag="3" Content="ورود از یک فروشنده"/>
+                <ListBoxItem Tag="4" Content="خروج به یک بخش"/>
+                <ListBoxItem Tag="5" Content="بر اساس شماره حواله"/>
+                <ListBoxItem Tag="6" Content="گردش یک کالا"/>
+              </ListBox>
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Style="{StaticResource CardPanel}" Margin="0">
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Image Source="/Assets/Icons/stock.png" Style="{StaticResource UiIconSection}"/>
+                <TextBlock Text="فیلترها" Style="{StaticResource SectionHeaderText}" Margin="8,0,0,0"/>
+              </StackPanel>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="PanelDates">
+                  <ctrl:IconLabel Label="از تاریخ شمسی" IconSource="/Assets/Icons/stock.png" Margin="0,0,0,4"/>
+                  <ctrl:JalaliDatePicker x:Name="PickerFromJ" Margin="0,4,0,10"/>
+                  <ctrl:IconLabel Label="تا تاریخ شمسی" IconSource="/Assets/Icons/stock.png" Margin="0,0,0,4"/>
+                  <ctrl:JalaliDatePicker x:Name="PickerToJ" Margin="0,4,0,4"/>
+                  <Button Style="{StaticResource ToolbarButton}" Content="۳۰ روز اخیر" HorizontalAlignment="Right" Click="OnLast30Days"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="16,0,0,0">
+                  <StackPanel x:Name="PanelProduct">
+                    <ctrl:IconLabel Label="کالا" IconSource="/Assets/Icons/products.png" Margin="0,0,0,4"/>
+                    <ctrl:SearchComboBox x:Name="CboProduct" Margin="0,4,0,10"
+                                         AutomationProperties.AutomationId="Reports.Product"/>
+                  </StackPanel>
+                  <StackPanel x:Name="PanelSupplier">
+                    <ctrl:IconLabel Label="فروشنده" IconSource="/Assets/Icons/suppliers.png" Margin="0,0,0,4"/>
+                    <ctrl:SearchComboBox x:Name="CboSupplier" Margin="0,4,0,10"
+                                         AutomationProperties.AutomationId="Reports.Supplier"/>
+                  </StackPanel>
+                  <StackPanel x:Name="PanelDept">
+                    <ctrl:IconLabel Label="بخش" IconSource="/Assets/Icons/departments.png" Margin="0,0,0,4"/>
+                    <ctrl:SearchComboBox x:Name="CboDept" Margin="0,4,0,10"
+                                         AutomationProperties.AutomationId="Reports.Dept"/>
+                  </StackPanel>
+                  <StackPanel x:Name="PanelDelivery">
+                    <ctrl:IconLabel Label="شماره حواله" IconSource="/Assets/Icons/outgoing.png" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtDelivery" Margin="0,4,0,0"
+                             AutomationProperties.AutomationId="Reports.Delivery"/>
+                  </StackPanel>
+                </StackPanel>
+              </Grid>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <Border Grid.Row="3" Style="{StaticResource CardPanel}" Padding="0" Margin="0,0,0,4">
+          <Grid MinHeight="260">
+            <DataGrid x:Name="Grid" Style="{StaticResource ReportDataGrid}"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                      MinHeight="260" MaxHeight="420"/>
+            <TextBlock x:Name="TxtEmpty" Visibility="Collapsed" Text="چیزی پیدا نشد؛ تاریخ یا فیلتر را عوض کنید."
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{StaticResource BrushMuted}" FontSize="16" Margin="24"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </ScrollViewer>
+
+    <Border Grid.Row="1" Padding="0,12,0,0" Margin="0,4,0,0"
+            BorderBrush="#FF243830" BorderThickness="0,1,0,0">
+      <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+        <Button x:Name="BtnRunReport" Style="{StaticResource PrimaryActionButton}"
+                Content="گزارش‌گیری" Click="OnRun" Padding="28,14" Margin="0,0,8,0"
+                AutomationProperties.Name="گزارش‌گیری"
+                AutomationProperties.AutomationId="Reports.Run"/>
+        <Button Style="{StaticResource ToolbarButton}" Content="کپی برای Excel" Click="OnCopy" Margin="0,0,8,0"/>
+        <Button Style="{StaticResource ToolbarButton}" Content="بازگشت به منو" Click="OnBack"/>
       </StackPanel>
-      <StackPanel Grid.Column="1" Margin="16,0,0,0">
-        <TextBlock Text="کالا (گردش)" Foreground="{StaticResource BrushMuted}"/>
-        <ComboBox x:Name="CboProduct" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
-        <TextBlock Text="فروشنده" Foreground="{StaticResource BrushMuted}"/>
-        <ComboBox x:Name="CboSupplier" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
-        <TextBlock Text="بخش" Foreground="{StaticResource BrushMuted}"/>
-        <ComboBox x:Name="CboDept" DisplayMemberPath="Name" SelectedValuePath="Id" Height="32" Margin="0,4,0,8"/>
-        <TextBlock Text="شماره حواله" Foreground="{StaticResource BrushMuted}"/>
-        <TextBox x:Name="TxtDelivery" Height="32" Margin="0,4,0,8"/>
-      </StackPanel>
-    </Grid>
-    <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="True" IsReadOnly="True"
-              Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"/>
-    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,12,0,0">
-      <Button Style="{StaticResource PrimaryActionButton}" Content="نمایش گزارش" Click="OnRun"/>
-      <Button Style="{StaticResource MenuTileButton}" Content="راهنمای Excel: از منوی Access/اکسل — کپی جدول" Click="OnExcelHint"/>
-      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت" Click="OnBack"/>
-    </StackPanel>
+    </Border>
   </Grid>
 </Page>

@@ -1,0 +1,39 @@
+<Window x:Class="Anbarban.Views.Dialogs.AnbarbanMessageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="انباربان"
+        SizeToContent="WidthAndHeight"
+        MinWidth="380" MaxWidth="480"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FlowDirection="RightToLeft"
+        FontFamily="{StaticResource FontUi}">
+  <Border Style="{StaticResource LuxuryDialogBorder}" Margin="16">
+    <StackPanel>
+      <Border Width="88" Height="88" CornerRadius="44" HorizontalAlignment="Center" Margin="0,0,0,16">
+        <Border.Background>
+          <RadialGradientBrush GradientOrigin="0.3,0.3">
+            <GradientStop Color="#FF1F4A3D" Offset="0"/>
+            <GradientStop Color="#FF0A0E0D" Offset="1"/>
+          </RadialGradientBrush>
+        </Border.Background>
+        <Border.BorderBrush>
+          <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFE8C547" Offset="0"/>
+            <GradientStop Color="#FF8B6914" Offset="1"/>
+          </LinearGradientBrush>
+        </Border.BorderBrush>
+        <Border.BorderThickness>2</Border.BorderThickness>
+        <Image x:Name="ImgIcon" Width="52" Height="52" RenderOptions.BitmapScalingMode="HighQuality"/>
+      </Border>
+      <TextBlock x:Name="TxtTitle" Style="{StaticResource LuxuryDialogTitle}" Margin="0,0,0,10"/>
+      <TextBlock x:Name="TxtMessage" Style="{StaticResource LuxuryDialogBody}"/>
+      <Button x:Name="BtnOk" Style="{StaticResource LuxuryDialogOkButton}" Content="باشه، متوجه شدم"
+              HorizontalAlignment="Center" IsDefault="True" Click="OnOk"/>
+    </StackPanel>
+  </Border>
+</Window>

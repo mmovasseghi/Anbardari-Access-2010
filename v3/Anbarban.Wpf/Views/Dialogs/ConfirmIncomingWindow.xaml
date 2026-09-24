@@ -6,20 +6,33 @@
         Background="{StaticResource BrushBgDeep}"
         FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
   <Grid Margin="20">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
-    <TextBlock Text="لطفاً با فاکتور اصلی مطابقت دهید" Style="{StaticResource PageTitle}" FontSize="20"/>
-    <TextBlock x:Name="TxtSummary" Grid.Row="1" Margin="0,12,0,12" TextWrapping="Wrap"
-               Foreground="{StaticResource BrushMuted}"/>
-    <DataGrid x:Name="Grid" Grid.Row="2" IsReadOnly="True" AutoGenerateColumns="True"
-              Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"/>
-    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
-      <Button Style="{StaticResource MenuTileButton}" Content="بازگشت و اصلاح" Width="180" Margin="8" Click="OnBack"/>
-      <Button Style="{StaticResource PrimaryActionButton}" Content="تأیید و ثبت نهایی" Width="200" Margin="8" Click="OnConfirm"/>
-    </StackPanel>
+    <Grid x:Name="ReviewContent">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <TextBlock Text="یک بار دیگر با فاکتور چک کنید" Style="{StaticResource PageTitle}" FontSize="20"/>
+      <TextBlock x:Name="TxtSummary" Grid.Row="1" Margin="0,12,0,12" TextWrapping="Wrap"
+                 Foreground="{StaticResource BrushMuted}"/>
+      <DataGrid x:Name="LinesGrid" Grid.Row="2" IsReadOnly="True" AutoGenerateColumns="True"
+                Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"/>
+      <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
+        <Button Style="{StaticResource MenuTileButton}" Content="بازگشت و اصلاح" Width="180" Margin="8" Click="OnBack"/>
+        <Button Style="{StaticResource PrimaryActionButton}" Content="تأیید و ثبت نهایی" Width="200" Margin="8" Click="OnConfirm"/>
+      </StackPanel>
+    </Grid>
+
+    <Border x:Name="PanelSuccess" Visibility="Collapsed" Style="{StaticResource LuxuryDialogBorder}" Padding="32">
+      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Image Source="/Assets/Icons/check-circle.png" Width="80" Height="80" Margin="0,0,0,16"
+               RenderOptions.BitmapScalingMode="HighQuality"/>
+        <TextBlock Text="درخواست شما انجام شد" Style="{StaticResource LuxuryDialogTitle}" FontSize="24"/>
+        <TextBlock Text="ورود کالا ثبت نهایی شد و موجودی انبار به‌روز شد." Style="{StaticResource LuxuryDialogBody}" Margin="0,10,0,6"/>
+        <TextBlock x:Name="TxtSuccessDetail" Style="{StaticResource LuxuryDialogBody}" Foreground="{StaticResource BrushGold}"/>
+        <Button Style="{StaticResource LuxuryDialogOkButton}" Content="باشه، متوجه شدم" Click="OnSuccessDone"/>
+      </StackPanel>
+    </Border>
   </Grid>
 </Window>

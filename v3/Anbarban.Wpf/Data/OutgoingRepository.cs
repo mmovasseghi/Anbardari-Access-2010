@@ -20,18 +20,17 @@ namespace Anbarban.Data
         {
             using var conn = _db.Open();
             using var cmd = new OleDbCommand(
-                "SELECT ID, DocumentNumber, DeliveryNumber, DocumentDate, Description, IsPosted FROM OutgoingDocuments WHERE ID=?", conn);
+                "SELECT ID, DeliveryNumber, DocumentDate, Description, IsPosted FROM OutgoingDocuments WHERE ID=?", conn);
             cmd.Parameters.Add(OleDbUtil.P("@id", id));
             using var r = cmd.ExecuteReader();
             if (!r.Read()) return null;
             return new OutgoingHeader
             {
                 Id = r.GetInt32(0),
-                DocumentNumber = r.GetString(1),
-                DeliveryNumber = r.GetString(2),
-                DocumentDate = r.IsDBNull(3) ? null : r.GetDateTime(3),
-                Description = r.IsDBNull(4) ? null : r.GetString(4),
-                IsPosted = OleDbUtil.ToBool(r.GetValue(5))
+                DeliveryNumber = r.IsDBNull(1) ? "" : r.GetString(1),
+                DocumentDate = r.IsDBNull(2) ? null : r.GetDateTime(2),
+                Description = r.IsDBNull(3) ? null : r.GetString(3),
+                IsPosted = OleDbUtil.ToBool(r.GetValue(4))
             };
         }
 
@@ -41,16 +40,16 @@ namespace Anbarban.Data
             if (h.Id <= 0)
             {
                 OleDbUtil.ExecuteNonQuery(conn, null,
-                    @"INSERT INTO OutgoingDocuments (DocumentNumber, DeliveryNumber, DocumentDate, Description, IsPosted)
-                      VALUES (?,?,?,?,False)",
-                    OleDbUtil.P("@dn", h.DocumentNumber), OleDbUtil.P("@dl", h.DeliveryNumber),
+                    @"INSERT INTO OutgoingDocuments (DeliveryNumber, DocumentDate, Description, IsPosted)
+                      VALUES (?,?,?,False)",
+                    OleDbUtil.P("@dl", h.DeliveryNumber),
                     OleDbUtil.P("@dt", h.DocumentDate ?? (object)DateTime.Today), OleDbUtil.P("@desc", h.Description));
                 return OleDbUtil.GetLastIdentity(conn, null, "OutgoingDocuments");
             }
             OleDbUtil.ExecuteNonQuery(conn, null,
-                @"UPDATE OutgoingDocuments SET DocumentNumber=?, DeliveryNumber=?, DocumentDate=?, Description=?
+                @"UPDATE OutgoingDocuments SET DeliveryNumber=?, DocumentDate=?, Description=?
                   WHERE ID=? AND IsPosted=False",
-                OleDbUtil.P("@dn", h.DocumentNumber), OleDbUtil.P("@dl", h.DeliveryNumber),
+                OleDbUtil.P("@dl", h.DeliveryNumber),
                 OleDbUtil.P("@dt", h.DocumentDate ?? (object)DateTime.Today), OleDbUtil.P("@desc", h.Description),
                 OleDbUtil.P("@id", h.Id));
             return h.Id;
@@ -72,10 +71,10 @@ namespace Anbarban.Data
                 {
                     Id = r.GetInt32(0),
                     ProductId = r.GetInt32(1),
-                    ProductName = r.GetString(2),
+                    ProductName = r.IsDBNull(2) ? "" : r.GetString(2),
                     Quantity = Convert.ToInt32(r.GetValue(3)),
                     DepartmentId = r.GetInt32(4),
-                    DepartmentName = r.GetString(5),
+                    DepartmentName = r.IsDBNull(5) ? "" : r.GetString(5),
                     CurrentStock = Convert.ToInt32(r.GetValue(6))
                 });
             return list;

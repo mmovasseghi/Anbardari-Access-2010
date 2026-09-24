@@ -1,8 +1,6 @@
-using System;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using Anbarban.Models;
+using Anbarban.Services;
+using Anbarban.Views;
 
 namespace Anbarban.Views.Dialogs
 {
@@ -19,51 +17,54 @@ namespace Anbarban.Views.Dialogs
             if (includeDepartment)
             {
                 DeptPanel.Visibility = Visibility.Visible;
-                CboDept.ItemsSource = AppServices.Departments.ListActive();
+                LiveComboSearch.AttachDepartments(CboDept);
             }
-            var products = AppServices.Products.Search(null, 500);
-            CboProduct.ItemsSource = products.Select(p => new IdName { Id = p.Id, Name = p.Name + (string.IsNullOrEmpty(p.Code) ? "" : " (" + p.Code + ")") }).ToList();
-            CboProduct.SelectionChanged += (_, __) => FilterProducts();
-            CboProduct.AddHandler(TextBox.TextChangedEvent, new TextChangedEventHandler((_, __) => FilterProducts()), true);
-            if (productId.HasValue) CboProduct.SelectedValue = productId;
+            LiveComboSearch.AttachProductsAsIdName(CboProduct, includeCode: true);
+            if (productId.HasValue)
+            {
+                var p = AppServices.Products.GetById(productId.Value);
+                if (p != null)
+                {
+                    var label = p.Name + (string.IsNullOrEmpty(p.Code) ? "" : " (" + p.Code + ")");
+                    LiveComboSearch.SetSelectedId(CboProduct, p.Id, label);
+                }
+            }
             if (qty.HasValue) TxtQty.Text = qty.Value.ToString();
-            if (deptId.HasValue) CboDept.SelectedValue = deptId;
-        }
-
-        private void FilterProducts()
-        {
-            var t = (CboProduct.Text ?? "").Trim();
-            if (t.Length < 1) return;
-            var products = AppServices.Products.Search(t, 80);
-            CboProduct.ItemsSource = products.Select(p => new IdName { Id = p.Id, Name = p.Name }).ToList();
+            if (deptId.HasValue)
+            {
+                foreach (var d in AppServices.Departments.ListActive())
+                {
+                    if (d.Id == deptId.Value)
+                    {
+                        LiveComboSearch.SetSelectedId(CboDept, d.Id, d.Name);
+                        break;
+                    }
+                }
+            }
         }
 
         private void OnCancel(object sender, RoutedEventArgs e) => Close();
 
         private void OnOk(object sender, RoutedEventArgs e)
         {
-            var pVal = CboProduct.SelectedValue;
-            if (pVal is int pid) ProductId = pid;
-            else if (pVal == null || !int.TryParse(pVal.ToString(), out var parsedPid) || parsedPid <= 0)
+            if (CboProduct.SelectedId <= 0)
             {
-                MessageBox.Show("کالا را انتخاب کنید.", "انباربان"); return;
+                AnbarbanDialog.Warn("کالا را از لیست انتخاب کنید.", this); return;
             }
-            else ProductId = parsedPid;
+            ProductId = CboProduct.SelectedId;
 
             if (!int.TryParse(TxtQty.Text, out var q) || q <= 0)
             {
-                MessageBox.Show("تعداد باید بیشتر از صفر باشد.", "انباربان"); return;
+                AnbarbanDialog.Warn("تعداد باید بیشتر از صفر باشد.", this); return;
             }
             Quantity = q;
             if (DeptPanel.Visibility == Visibility.Visible)
             {
-                var dVal = CboDept.SelectedValue;
-                if (dVal is int d) DepartmentId = d;
-                else if (dVal == null || !int.TryParse(dVal.ToString(), out var parsedDept) || parsedDept <= 0)
+                if (CboDept.SelectedId <= 0)
                 {
-                    MessageBox.Show("بخش را انتخاب کنید.", "انباربان"); return;
+                    AnbarbanDialog.Warn("بخش را از لیست انتخاب کنید.", this); return;
                 }
-                else DepartmentId = parsedDept;
+                DepartmentId = CboDept.SelectedId;
             }
             Ok = true;
             Close();

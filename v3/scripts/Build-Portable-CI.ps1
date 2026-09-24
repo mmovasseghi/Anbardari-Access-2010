@@ -25,6 +25,12 @@ Copy-Item -Path "$src\*" -Destination $outDir -Recurse -Force
 $dbSrc = Join-Path $repoRoot "database\Inventory.accdb"
 if (Test-Path $dbSrc) {
   Copy-Item $dbSrc (Join-Path $outDir "Data\Inventory.accdb")
+} else {
+  @"
+اگر Inventory.accdb اینجا نیست:
+- اول Anbarban.exe را بزنید (با ACE 64-bit معمولاً خودکار ساخته می‌شود)
+- یا «ساخت-پایگاه-داده.bat» را اجرا کنید
+"@ | Set-Content -Path (Join-Path $outDir "Data\README.txt") -Encoding UTF8
 }
 
 Copy-Item (Join-Path $repoRoot "release\راهنما-انباربان.txt") (Join-Path $outDir "راهنما.txt") -ErrorAction SilentlyContinue

@@ -1,6 +1,8 @@
 <Page x:Class="Anbarban.Views.ProductsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:services="clr-namespace:Anbarban.Services"
+      services:MouseWheelScrollHelper.Enable="True"
       Background="{StaticResource BrushBgDeep}"
       FlowDirection="RightToLeft"
       FontFamily="{StaticResource FontUi}">
@@ -14,11 +16,12 @@
 
     <TextBlock x:Name="TxtTitle" Text="مدیریت کالاها" Style="{StaticResource PageTitle}"/>
     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,0,12">
-      <TextBox x:Name="TxtSearch" Width="320" Height="36" VerticalContentAlignment="Center"
+      <TextBox x:Name="TxtSearch" Width="320" VerticalContentAlignment="Center"
+               AutomationProperties.AutomationId="Products.Search"
                Background="{StaticResource BrushBgCard}" Foreground="{StaticResource BrushText}"
                BorderBrush="{StaticResource BrushAccentDark}" Padding="10,4"
-               ToolTip="نام یا کد کالا"/>
-      <Button Style="{StaticResource MenuTileButton}" Content="جستجو" Margin="8,0,0,0" Click="OnSearch"/>
+               ToolTip="نام یا کد را بنویسید؛ لیست خودش جمع می‌شود"/>
+      <Button Style="{StaticResource MenuTileButton}" Content="بروزرسانی" Margin="8,0,0,0" Click="OnSearch"/>
     </StackPanel>
 
     <DataGrid x:Name="Grid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"

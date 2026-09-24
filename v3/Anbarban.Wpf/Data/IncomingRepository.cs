@@ -15,7 +15,7 @@ namespace Anbarban.Data
             using var conn = _db.Open();
             using var cmd = new OleDbCommand(
                 @"SELECT d.ID, d.DocumentNumber, d.InvoiceNumber, d.DocumentDate, d.SupplierID, d.Description, d.IsPosted, s.SupplierName
-                  FROM IncomingDocuments d INNER JOIN Suppliers s ON d.SupplierID=s.ID WHERE d.ID=?", conn);
+                  FROM IncomingDocuments d LEFT JOIN Suppliers s ON d.SupplierID=s.ID WHERE d.ID=?", conn);
             cmd.Parameters.Add(OleDbUtil.P("@id", id));
             using var r = cmd.ExecuteReader();
             if (!r.Read()) return null;
@@ -59,7 +59,7 @@ namespace Anbarban.Data
                 {
                     Id = r.GetInt32(0),
                     ProductId = r.GetInt32(1),
-                    ProductName = r.GetString(2),
+                    ProductName = r.IsDBNull(2) ? "" : r.GetString(2),
                     Quantity = Convert.ToInt32(r.GetValue(3))
                 });
             return list;

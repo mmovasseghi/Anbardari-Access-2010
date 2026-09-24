@@ -2,28 +2,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Anbarban.Services;
 
 namespace Anbarban.Views
 {
     public partial class DepartmentsPage : Page
     {
         private int _id;
+        private List<DeptVm> _items = new();
 
         public DepartmentsPage()
         {
             InitializeComponent();
-            Loaded += (_, __) => Reload();
+            Loaded += (_, __) =>
+            {
+                LiveComboSearch.AttachTextBox(TxtFilter, ApplyFilter);
+                Reload();
+            };
         }
 
-        private void Reload() =>
-            Grid.ItemsSource = AppServices.Departments.ListAll()
-                .Select(d => new DeptVm(d.Id, d.Name, d.Active)).ToList();
+        private void Reload()
+        {
+            UiError.Try(() =>
+            {
+                _items = AppServices.Departments.ListAll()
+                    .Select(d => new DeptVm(d.Id, d.Name, d.Active)).ToList();
+                ApplyFilter();
+            }, "بارگذاری بخش‌ها ممکن نشد.");
+        }
+
+        private void ApplyFilter()
+        {
+            var term = (TxtFilter?.Text ?? "").Trim();
+            var view = string.IsNullOrEmpty(term)
+                ? _items
+                : _items.Where(d => d.Name.StartsWith(term, System.StringComparison.CurrentCultureIgnoreCase)
+                                    || d.Name.Contains(term)).ToList();
+            Grid.ItemsSource = null;
+            Grid.ItemsSource = view;
+        }
 
         private sealed class DeptVm
         {
             public int Id { get; }
             public string Name { get; }
             public bool Active { get; }
+            public string ActiveLabel => Active ? "بله" : "خیر";
             public DeptVm(int id, string name, bool active) => (Id, Name, Active) = (id, name, active);
         }
 
@@ -41,11 +65,15 @@ namespace Anbarban.Views
         {
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
-                MessageBox.Show("نام بخش را وارد کنید.", "انباربان"); return;
+                AnbarbanDialog.Warn("نام بخش را وارد کنید.", Window.GetWindow(this)); return;
             }
-            AppServices.Departments.Save(_id, TxtName.Text.Trim(), ChkActive.IsChecked == true);
+            if (!UiError.Try(() =>
+                    AppServices.Departments.Save(_id, TxtName.Text.Trim(), ChkActive.IsChecked == true),
+                "ذخیره بخش انجام نشد."))
+                return;
             Reload();
-            MessageBox.Show("ذخیره شد.", "انباربان");
+            OnNew(sender, e);
+            AnbarbanDialog.Success("بخش ذخیره شد.", Window.GetWindow(this));
         }
 
         private void OnBack(object sender, RoutedEventArgs e) => Navigation.GoHome(this);

@@ -1,0 +1,43 @@
+<UserControl x:Class="Anbarban.Controls.SearchComboBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             FontFamily="{StaticResource FontUi}"
+             MinHeight="44">
+  <Grid x:Name="Root">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="40"/>
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0" Background="{StaticResource InputBgBrush}"
+            BorderBrush="{StaticResource BrushAccentDark}" BorderThickness="1,1,0,1"
+            CornerRadius="8,0,0,8">
+      <TextBox x:Name="TxtQuery" BorderThickness="0" Background="Transparent"
+               Padding="12,10" VerticalContentAlignment="Center"
+               FontSize="15" Foreground="{StaticResource BrushText}"
+               CaretBrush="{StaticResource BrushAccent}"
+               TextChanged="OnQueryChanged"
+               PreviewKeyDown="OnQueryKeyDown"
+               GotFocus="OnQueryGotFocus"
+               PreviewMouseDown="OnQueryPreviewMouseDown"
+               ToolTip="چند حرف بنویسید یا ▼ را بزنید"/>
+    </Border>
+
+    <Button x:Name="BtnDrop" Grid.Column="1" Click="OnToggleDrop"
+            Style="{StaticResource SearchComboDropButton}" ToolTip="لیست کامل"/>
+
+    <Popup x:Name="SuggestPopup" PlacementTarget="{Binding ElementName=Root}"
+           Placement="Bottom" StaysOpen="False" AllowsTransparency="False" PopupAnimation="Fade">
+      <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              MaxHeight="300" Background="{StaticResource DropdownBgBrush}"
+              BorderBrush="{StaticResource BrushAccentDark}" BorderThickness="1" CornerRadius="8" Margin="0,4,0,0">
+        <Border.Effect>
+          <DropShadowEffect BlurRadius="14" ShadowDepth="3" Opacity="0.4"/>
+        </Border.Effect>
+        <ListBox x:Name="LstSuggest" BorderThickness="0" Background="Transparent"
+                 DisplayMemberPath="Name" KeyDown="OnListKeyDown"/>
+      </Border>
+    </Popup>
+  </Grid>
+</UserControl>

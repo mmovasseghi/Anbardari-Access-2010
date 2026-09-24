@@ -22,6 +22,8 @@ namespace Anbarban.Services
             using var tx = conn.BeginTransaction();
             try
             {
+                if (IsPosted(conn, tx, "IncomingDocuments", documentId))
+                    return "این سند قبلاً ثبت نهایی شده است.";
                 var items = LoadIncomingItems(conn, tx, documentId);
                 if (items.Count == 0) return "حداقل یک قلم کالا وارد کنید.";
                 foreach (var (pid, qty) in items)
@@ -33,8 +35,8 @@ namespace Anbarban.Services
                     }
                 }
                 OleDbUtil.ExecuteNonQuery(conn, tx,
-                    "UPDATE IncomingDocuments SET IsPosted=True, PostedAt=? WHERE ID=?",
-                    OleDbUtil.P("@d", DateTime.Now), OleDbUtil.P("@id", documentId));
+                    "UPDATE IncomingDocuments SET IsPosted=?, PostedAt=Now() WHERE ID=?",
+                    OleDbUtil.P("@p", true), OleDbUtil.P("@id", documentId));
                 tx.Commit();
                 return null;
             }
@@ -51,6 +53,8 @@ namespace Anbarban.Services
             using var tx = conn.BeginTransaction();
             try
             {
+                if (IsPosted(conn, tx, "OutgoingDocuments", documentId))
+                    return "این سند قبلاً ثبت نهایی شده است.";
                 var items = LoadOutgoingItems(conn, tx, documentId);
                 if (items.Count == 0) return "حداقل یک قلم کالا وارد کنید.";
                 var totals = new Dictionary<int, int>();
@@ -71,8 +75,8 @@ namespace Anbarban.Services
                     }
                 }
                 OleDbUtil.ExecuteNonQuery(conn, tx,
-                    "UPDATE OutgoingDocuments SET IsPosted=True, PostedAt=? WHERE ID=?",
-                    OleDbUtil.P("@d", DateTime.Now), OleDbUtil.P("@id", documentId));
+                    "UPDATE OutgoingDocuments SET IsPosted=?, PostedAt=Now() WHERE ID=?",
+                    OleDbUtil.P("@p", true), OleDbUtil.P("@id", documentId));
                 tx.Commit();
                 return null;
             }
@@ -98,8 +102,8 @@ namespace Anbarban.Services
                     }
                 }
                 OleDbUtil.ExecuteNonQuery(conn, tx,
-                    "UPDATE IncomingDocuments SET IsPosted=False, PostedAt=Null WHERE ID=?",
-                    OleDbUtil.P("@id", documentId));
+                    "UPDATE IncomingDocuments SET IsPosted=?, PostedAt=Null WHERE ID=?",
+                    OleDbUtil.P("@p", false), OleDbUtil.P("@id", documentId));
                 tx.Commit();
                 return null;
             }
@@ -121,12 +125,20 @@ namespace Anbarban.Services
                     }
                 }
                 OleDbUtil.ExecuteNonQuery(conn, tx,
-                    "UPDATE OutgoingDocuments SET IsPosted=False, PostedAt=Null WHERE ID=?",
-                    OleDbUtil.P("@id", documentId));
+                    "UPDATE OutgoingDocuments SET IsPosted=?, PostedAt=Null WHERE ID=?",
+                    OleDbUtil.P("@p", false), OleDbUtil.P("@id", documentId));
                 tx.Commit();
                 return null;
             }
             catch (Exception ex) { tx.Rollback(); return ex.Message; }
+        }
+
+        private static bool IsPosted(OleDbConnection conn, OleDbTransaction tx, string table, int documentId)
+        {
+            using var cmd = new OleDbCommand($"SELECT IsPosted FROM {table} WHERE ID=?", conn, tx);
+            cmd.Parameters.Add(OleDbUtil.P("@id", documentId));
+            var o = cmd.ExecuteScalar();
+            return o != null && o != DBNull.Value && OleDbUtil.ToBool(o);
         }
 
         private static List<(int ProductId, int Qty)> LoadIncomingItems(OleDbConnection conn, OleDbTransaction tx, int docId)

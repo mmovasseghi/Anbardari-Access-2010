@@ -9,6 +9,10 @@ namespace Anbarban.Data
     {
         public static string GetDatabasePath()
         {
+            var env = Environment.GetEnvironmentVariable("ANBARBAN_DATABASE_PATH");
+            if (!string.IsNullOrWhiteSpace(env))
+                return env.Trim();
+
             var configured = ConfigurationManager.AppSettings["DatabasePath"] ?? @"Data\Inventory.accdb";
             if (Path.IsPathRooted(configured))
                 return configured;

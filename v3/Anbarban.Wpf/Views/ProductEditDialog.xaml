@@ -5,13 +5,13 @@
         Background="{StaticResource BrushBgDeep}" FlowDirection="RightToLeft" FontFamily="{StaticResource FontUi}">
   <StackPanel Margin="20" MinWidth="360">
     <TextBlock Text="نام کالا *" Foreground="{StaticResource BrushMuted}"/>
-    <TextBox x:Name="TxtName" Height="32" Margin="0,4,0,10"/>
+    <TextBox x:Name="TxtName" Margin="0,4,0,10"/>
     <TextBlock Text="کد" Foreground="{StaticResource BrushMuted}"/>
-    <TextBox x:Name="TxtCode" Height="32" Margin="0,4,0,10"/>
+    <TextBox x:Name="TxtCode" Margin="0,4,0,10"/>
     <TextBlock Text="واحد" Foreground="{StaticResource BrushMuted}"/>
-    <TextBox x:Name="TxtUnit" Height="32" Margin="0,4,0,10"/>
+    <TextBox x:Name="TxtUnit" Margin="0,4,0,10"/>
     <TextBlock Text="حداقل موجودی" Foreground="{StaticResource BrushMuted}"/>
-    <TextBox x:Name="TxtMin" Height="32" Margin="0,4,0,16"/>
+    <TextBox x:Name="TxtMin" Margin="0,4,0,16"/>
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
       <Button Style="{StaticResource MenuTileButton}" Content="انصراف" Width="100" Margin="6" IsCancel="True"/>
       <Button Style="{StaticResource PrimaryActionButton}" Content="ذخیره" Width="100" Margin="6" IsDefault="True" Click="OnSave"/>

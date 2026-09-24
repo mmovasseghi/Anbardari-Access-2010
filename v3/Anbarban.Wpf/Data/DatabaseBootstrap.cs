@@ -22,8 +22,36 @@ namespace Anbarban.Data
 
             if (!SchemaExists(dbPath))
                 CreateSchema(dbPath);
+            else
+                ApplyMigrations(dbPath);
 
             return File.Exists(dbPath) && SchemaExists(dbPath);
+        }
+
+        private static void ApplyMigrations(string dbPath)
+        {
+            try
+            {
+                using var conn = new OleDbConnection(AccessConfig.BuildConnectionString(dbPath));
+                conn.Open();
+                TryDropColumn(conn, "OutgoingDocuments", "DocumentNumber");
+            }
+            catch
+            {
+                // ignore — migration best-effort
+            }
+        }
+
+        private static void TryDropColumn(OleDbConnection conn, string table, string column)
+        {
+            try
+            {
+                OleDbUtil.ExecuteNonQuery(conn, null, $"ALTER TABLE {table} DROP COLUMN {column}");
+            }
+            catch
+            {
+                // column already removed or unsupported
+            }
         }
 
         public static bool SchemaExists(string dbPath)
@@ -75,7 +103,7 @@ namespace Anbarban.Data
             "CREATE TABLE Departments (ID COUNTER PRIMARY KEY, DepartmentName TEXT(100), IsActive YESNO)",
             "CREATE TABLE IncomingDocuments (ID COUNTER PRIMARY KEY, DocumentNumber TEXT(50), InvoiceNumber TEXT(50), DocumentDate DATETIME, SupplierID LONG, Description TEXT(255), IsPosted YESNO, PostedAt DATETIME)",
             "CREATE TABLE IncomingItems (ID COUNTER PRIMARY KEY, IncomingDocumentID LONG, ProductID LONG, Quantity LONG)",
-            "CREATE TABLE OutgoingDocuments (ID COUNTER PRIMARY KEY, DocumentNumber TEXT(50), DeliveryNumber TEXT(50), DocumentDate DATETIME, Description TEXT(255), IsPosted YESNO, PostedAt DATETIME)",
+            "CREATE TABLE OutgoingDocuments (ID COUNTER PRIMARY KEY, DeliveryNumber TEXT(50), DocumentDate DATETIME, Description TEXT(255), IsPosted YESNO, PostedAt DATETIME)",
             "CREATE TABLE OutgoingItems (ID COUNTER PRIMARY KEY, OutgoingDocumentID LONG, ProductID LONG, Quantity LONG, DepartmentID LONG)",
             "CREATE TABLE UsedUnlockCodes (ID COUNTER PRIMARY KEY, UnlockCode TEXT(6), DocKind TEXT(10), DocumentID LONG, UsedAt DATETIME)"
         };

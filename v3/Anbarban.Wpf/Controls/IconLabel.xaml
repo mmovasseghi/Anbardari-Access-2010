@@ -1,0 +1,11 @@
+<UserControl x:Class="Anbarban.Controls.IconLabel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             FontFamily="{StaticResource FontUi}">
+  <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+    <Image x:Name="ImgIcon" Style="{StaticResource UiIconLabel}"/>
+    <TextBlock x:Name="TxtLabel" VerticalAlignment="Center"
+               Foreground="{StaticResource BrushMuted}" FontSize="14"/>
+  </StackPanel>
+</UserControl>

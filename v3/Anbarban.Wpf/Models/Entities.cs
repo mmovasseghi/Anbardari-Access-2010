@@ -6,6 +6,7 @@ namespace Anbarban.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
+        public override string ToString() => Name;
     }
 
     public sealed class IncomingHeader
@@ -31,7 +32,6 @@ namespace Anbarban.Models
     public sealed class OutgoingHeader
     {
         public int Id { get; set; }
-        public string DocumentNumber { get; set; } = "";
         public string DeliveryNumber { get; set; } = "";
         public DateTime? DocumentDate { get; set; }
         public string? Description { get; set; }

@@ -30,7 +30,7 @@ SELECT DocDate AS [تاریخ], [نوع], [تعداد], [طرف], [شماره س
        INNER JOIN Suppliers s ON d.SupplierID=s.ID)
  WHERE d.IsPosted=True AND ii.ProductID=?
  UNION ALL
- SELECT d.DocumentDate, 'خروج', oi.Quantity, dep.DepartmentName, d.DocumentNumber, d.Description
+ SELECT d.DocumentDate, 'خروج', oi.Quantity, dep.DepartmentName, d.DeliveryNumber, d.Description
  FROM ((OutgoingDocuments d INNER JOIN OutgoingItems oi ON d.ID=oi.OutgoingDocumentID)
        INNER JOIN Departments dep ON oi.DepartmentID=dep.ID)
  WHERE d.IsPosted=True AND oi.ProductID=?
@@ -60,7 +60,7 @@ SELECT DocDate AS [تاریخ], [نوع], [شماره سند], [فاکتور], [
        INNER JOIN Products p ON ii.ProductID=p.ID) INNER JOIN Suppliers s ON d.SupplierID=s.ID
  WHERE d.IsPosted=True
  UNION ALL
- SELECT d.DocumentDate, 'خروج', d.DocumentNumber, '', d.DeliveryNumber, dep.DepartmentName, p.ProductName, oi.Quantity
+ SELECT d.DocumentDate, 'خروج', '', '', d.DeliveryNumber, dep.DepartmentName, p.ProductName, oi.Quantity
  FROM ((OutgoingDocuments d INNER JOIN OutgoingItems oi ON d.ID=oi.OutgoingDocumentID)
        INNER JOIN Products p ON oi.ProductID=p.ID) INNER JOIN Departments dep ON oi.DepartmentID=dep.ID
  WHERE d.IsPosted=True

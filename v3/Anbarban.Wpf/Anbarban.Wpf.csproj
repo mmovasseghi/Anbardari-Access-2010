@@ -10,7 +10,8 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Anbarban</AssemblyName>
     <RootNamespace>Anbarban</RootNamespace>
-    <Version>3.0.0</Version>
+    <StartupObject>Anbarban.Program</StartupObject>
+    <Version>3.0.3</Version>
     <Company>انباربان</Company>
     <Product>Anbarban Warehouse</Product>
     <Description>انباربان — اپ ویندوز با پایگاه Access</Description>
@@ -23,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\Icons\*.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\database\Inventory.accdb" Link="Data\Inventory.accdb" Condition="Exists('..\..\database\Inventory.accdb')">
