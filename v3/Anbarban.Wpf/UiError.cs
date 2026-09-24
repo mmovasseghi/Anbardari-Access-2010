@@ -32,6 +32,15 @@ namespace Anbarban
                 return;
             }
 
+            var blob = ex.ToString();
+            if (blob.Contains("ACE_NOT_INSTALLED", StringComparison.OrdinalIgnoreCase)
+                || blob.Contains("ACE.OLEDB", StringComparison.OrdinalIgnoreCase)
+                || blob.Contains("provider is not registered", StringComparison.OrdinalIgnoreCase))
+            {
+                UiDialog.ShowAceMissing(Application.Current?.MainWindow);
+                return;
+            }
+
             AnbarbanDialog.Warn(msg, Application.Current?.MainWindow);
         }
 

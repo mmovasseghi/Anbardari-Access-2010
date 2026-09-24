@@ -1,7 +1,7 @@
-using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using Anbarban.Services;
 
 namespace Anbarban.Data
 {
@@ -21,10 +21,7 @@ namespace Anbarban.Data
             return Path.Combine(baseDir, configured);
         }
 
-        public static string BuildConnectionString(string dbPath)
-        {
-            // ACE 12.0 — نسخه v3: Redistributable 64-bit (هم‌تراز PlatformTarget x64)
-            return $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
-        }
+        public static string BuildConnectionString(string dbPath) =>
+            AceProviderService.BuildConnectionString(dbPath);
     }
 }

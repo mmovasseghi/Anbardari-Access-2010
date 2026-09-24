@@ -2,7 +2,6 @@ using System;
 using System.Data.OleDb;
 using System.IO;
 using System.Runtime.InteropServices;
-
 namespace Anbarban.Data
 {
     /// <summary>ساخت Inventory.accdb فقط با جداول — بدون Access و بدون frmMain.</summary>
@@ -16,7 +15,7 @@ namespace Anbarban.Data
 
             if (!File.Exists(dbPath))
             {
-                if (!TryCreateEmptyAccdb(dbPath))
+                if (!TryCreateEmptyFile(dbPath))
                     return false;
             }
 
@@ -70,22 +69,38 @@ namespace Anbarban.Data
             }
         }
 
-        private static bool TryCreateEmptyAccdb(string dbPath)
+        /// <summary>ساخت فایل accdb خالی با یک provider مشخص یا اولین ACE در دسترس.</summary>
+        public static bool TryCreateEmptyFile(string dbPath, string? provider = null)
         {
-            try
+            var candidates = provider != null
+                ? new[] { provider }
+                : new[]
+                {
+                    "Microsoft.ACE.OLEDB.16.0",
+                    "Microsoft.ACE.OLEDB.12.0",
+                    "Microsoft.ACE.OLEDB.15.0"
+                };
+
+            var catalogType = Type.GetTypeFromProgID("ADOX.Catalog");
+            if (catalogType == null) return false;
+
+            foreach (var p in candidates)
             {
-                var catalogType = Type.GetTypeFromProgID("ADOX.Catalog");
-                if (catalogType == null) return false;
-                dynamic catalog = Activator.CreateInstance(catalogType)!;
-                var connStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + dbPath + ";";
-                catalog.Create(connStr);
-                Marshal.ReleaseComObject(catalog);
-                return true;
+                try
+                {
+                    dynamic catalog = Activator.CreateInstance(catalogType)!;
+                    var connStr = $"Provider={p};Data Source={dbPath};";
+                    catalog.Create(connStr);
+                    Marshal.ReleaseComObject(catalog);
+                    return true;
+                }
+                catch
+                {
+                    try { if (File.Exists(dbPath)) File.Delete(dbPath); } catch { /* ignore */ }
+                }
             }
-            catch
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private static void CreateSchema(string dbPath)

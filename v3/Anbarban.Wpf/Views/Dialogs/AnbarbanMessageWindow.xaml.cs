@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Anbarban.Views.Dialogs
@@ -43,6 +44,12 @@ namespace Anbarban.Views.Dialogs
         {
             DialogResult = true;
             Close();
+        }
+
+        private void OnDragMove(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
         }
     }
 }

@@ -12,7 +12,8 @@
         Background="Transparent"
         FlowDirection="RightToLeft"
         FontFamily="{StaticResource FontUi}">
-  <Border Style="{StaticResource LuxuryDialogBorder}" Margin="16">
+  <Border Style="{StaticResource LuxuryDialogBorder}" Margin="16"
+          MouseLeftButtonDown="OnDragMove" Cursor="SizeAll">
     <StackPanel>
       <Border Width="88" Height="88" CornerRadius="44" HorizontalAlignment="Center" Margin="0,0,0,16">
         <Border.Background>

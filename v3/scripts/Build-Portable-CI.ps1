@@ -22,6 +22,11 @@ New-Item -ItemType Directory -Path (Join-Path $outDir "tools") | Out-Null
 
 Copy-Item -Path "$src\*" -Destination $outDir -Recurse -Force
 
+$redistSrc = Join-Path $v3Root "redist"
+if (Test-Path $redistSrc) {
+  Copy-Item -Path "$redistSrc\*" -Destination (Join-Path $outDir "redist") -Recurse -Force
+}
+
 $dbSrc = Join-Path $repoRoot "database\Inventory.accdb"
 if (Test-Path $dbSrc) {
   Copy-Item $dbSrc (Join-Path $outDir "Data\Inventory.accdb")
@@ -54,7 +59,7 @@ Copy-Item (Join-Path $v3Root "portable-template\ساخت-پایگاه-داده.b
    - یا Anbarban.exe را بزنید (خودکار اگر ACE نصب باشد)
    - فایل Inventory.accdb را در پوشه Data کپی کنید.
 
-۳) پیش‌نیاز: .NET 4.8 + ACE OLEDB 64-bit
+۳) پیش‌نیاز: .NET 4.8 — موتور ACE در صورت نبودن از داخل برنامه نصب/دانلود می‌شود (پوشه redist)
 
 بکاپ: Data\Inventory.accdb
 "@ | Set-Content -Path (Join-Path $outDir "شروع-بخوانید.txt") -Encoding UTF8

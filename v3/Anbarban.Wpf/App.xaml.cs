@@ -1,9 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Markup;
-using Anbarban.Data;
 using Anbarban.Services;
-using Anbarban.Views;
 
 namespace Anbarban
 {
@@ -31,22 +29,13 @@ namespace Anbarban
             if (string.Equals(Environment.GetEnvironmentVariable("ANBARBAN_LIVE_TEST"), "1", StringComparison.Ordinal))
                 return;
 
-            try
+            if (!StartupBootstrap.Run())
             {
-                var path = AccessConfig.GetDatabasePath();
-                if (!DatabaseBootstrap.EnsureDatabase(path))
-                {
-                    AnbarbanDialog.Warn(AccessConnectionFactory.BuildHelpMessage(path), null, "راه‌اندازی پایگاه");
-                }
-            }
-            catch (Exception ex)
-            {
-                AnbarbanDialog.Error(ex.Message, null);
+                Shutdown();
+                return;
             }
 
-            var main = new MainWindow();
-            MainWindow = main;
-            main.Show();
+            StartupBootstrap.ShowMainWindow();
         }
     }
 }

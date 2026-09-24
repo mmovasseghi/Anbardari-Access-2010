@@ -1,6 +1,7 @@
 using System;
 using System.Data.OleDb;
 using System.IO;
+using Anbarban.Services;
 
 namespace Anbarban.Data
 {
@@ -12,6 +13,9 @@ namespace Anbarban.Data
 
         private static void EnsureReady(string path)
         {
+            if (!AceProviderService.IsAceAvailable())
+                throw new InvalidOperationException("ACE_NOT_INSTALLED");
+
             if (!File.Exists(path) || !DatabaseBootstrap.SchemaExists(path))
             {
                 if (!DatabaseBootstrap.EnsureDatabase(path))
