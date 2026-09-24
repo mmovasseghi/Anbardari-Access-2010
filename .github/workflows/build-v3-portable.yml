@@ -36,8 +36,11 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v3.')
         uses: softprops/action-gh-release@v2
         with:
+          name: انباربان ${{ github.ref_name }} — پرتابل WPF (64-bit)
+          body_path: release/RELEASE_NOTES_${{ github.ref_name }}.md
           files: release/Anbarban-v3-Portable.zip
           fail_on_unmatched_files: true
+          make_latest: true
 
       - name: Attach to Release v3.0.1 (manual dispatch on main)
         if: github.event_name == 'workflow_dispatch'

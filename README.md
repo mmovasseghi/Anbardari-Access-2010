@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3">دانلود پرتابل v3.0.3</a>
+  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4">دانلود پرتابل v3.0.4</a>
   ·
   <a href="v3/README.md">راهنمای توسعه‌دهنده</a>
   ·
-  <a href="release/RELEASE_NOTES_v3.0.3.md">یادداشت انتشار</a>
+  <a href="release/RELEASE_NOTES_v3.0.4.md">یادداشت انتشار</a>
 </p>
 
 ---
@@ -22,11 +22,11 @@
 
 | مرحله | کار |
 |--------|-----|
-| ۱ | از [Release v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) فایل **`Anbarban-v3-Portable.zip`** را بگیرید |
+| ۱ | از [Release v3.0.4](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4) فایل **`Anbarban-v3-Portable.zip`** را بگیرید |
 | ۲ | Extract در هر پوشه (مثلاً `D:\Anbarban`) |
 | ۳ | دوبارکلیک **`شروع انباربان.bat`** |
 
-**پیش‌نیاز (یک بار):** Windows 7+ · [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) · **Microsoft ACE OLEDB 12.0 (64-bit)**
+**پیش‌نیاز (یک بار):** Windows 7+ · [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/net48) · **ACE 64-bit** (در صورت نبود، از داخل برنامه نصب می‌شود)
 
 اگر `Data\Inventory.accdb` نبود، با اولین اجرا (با ACE) معمولاً خودکار ساخته می‌شود؛ یا **`ساخت-پایگاه-داده.bat`** را بزنید.
 
@@ -137,7 +137,7 @@ portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 
 | نسخه | مخاطب | دانلود |
 |------|--------|--------|
-| **v3** | **پیشنهاد — WPF پرتابل** | [v3.0.3](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.3) |
+| **v3** | **پیشنهاد — WPF پرتابل** | [v3.0.4](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.4) |
 | v2.0 | داخل Microsoft Access 2010 | [v2.0.0](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v2.0.0) · [`release/Anbarban-v2.0-Access-2010.zip`](release/Anbarban-v2.0-Access-2010.zip) |
 | v1.0 | پرتابل مرورگر (legacy) | [`release/Anbardari-v1.0-Windows.zip`](release/Anbardari-v1.0-Windows.zip) |
 
@@ -173,4 +173,4 @@ portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 
 ---
 
-<p align="center"><sub>نسخهٔ README برای <strong>انباربان v3</strong> — آخرین پرتابل: <strong>v3.0.3</strong></sub></p>
+<p align="center"><sub>نسخهٔ README برای <strong>انباربان v3</strong> — آخرین پرتابل: <strong>v3.0.4</strong></sub></p>

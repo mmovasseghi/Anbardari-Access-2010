@@ -117,10 +117,10 @@ namespace Anbarban.Services
         private static bool IsAceRelated(Exception ex)
         {
             var text = ex.ToString();
-            return text.Contains("ACE", StringComparison.OrdinalIgnoreCase)
-                   || text.Contains("OLEDB", StringComparison.OrdinalIgnoreCase)
-                   || text.Contains("ACE_NOT_INSTALLED", StringComparison.OrdinalIgnoreCase)
-                   || text.Contains("provider is not registered", StringComparison.OrdinalIgnoreCase);
+            return text.IndexOf("ACE", StringComparison.OrdinalIgnoreCase) >= 0
+                   || text.IndexOf("OLEDB", StringComparison.OrdinalIgnoreCase) >= 0
+                   || text.IndexOf("ACE_NOT_INSTALLED", StringComparison.OrdinalIgnoreCase) >= 0
+                   || text.IndexOf("provider is not registered", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         public static void ShowMainWindow()

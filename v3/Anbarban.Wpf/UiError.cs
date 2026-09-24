@@ -33,9 +33,9 @@ namespace Anbarban
             }
 
             var blob = ex.ToString();
-            if (blob.Contains("ACE_NOT_INSTALLED", StringComparison.OrdinalIgnoreCase)
-                || blob.Contains("ACE.OLEDB", StringComparison.OrdinalIgnoreCase)
-                || blob.Contains("provider is not registered", StringComparison.OrdinalIgnoreCase))
+            if (blob.IndexOf("ACE_NOT_INSTALLED", StringComparison.OrdinalIgnoreCase) >= 0
+                || blob.IndexOf("ACE.OLEDB", StringComparison.OrdinalIgnoreCase) >= 0
+                || blob.IndexOf("provider is not registered", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 UiDialog.ShowAceMissing(Application.Current?.MainWindow);
                 return;
