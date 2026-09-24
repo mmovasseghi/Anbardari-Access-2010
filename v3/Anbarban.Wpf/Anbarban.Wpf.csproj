@@ -11,7 +11,7 @@
     <AssemblyName>Anbarban</AssemblyName>
     <RootNamespace>Anbarban</RootNamespace>
     <StartupObject>Anbarban.Program</StartupObject>
-    <Version>3.0.3</Version>
+    <Version>3.0.4</Version>
     <Company>انباربان</Company>
     <Product>Anbarban Warehouse</Product>
     <Description>انباربان — اپ ویندوز با پایگاه Access</Description>
