@@ -30,9 +30,8 @@ jobs:
         with:
           name: Anbarban-v3-packages
           path: |
-            release/Anbarban-v3-App.zip
-            release/Anbarban-v3-Prerequisites.zip
             release/Anbarban-v3-Portable.zip
+            release/Anbarban-v3-Prerequisites.zip
           retention-days: 90
 
       - name: Attach to GitHub Release (tag v3.x)
@@ -42,9 +41,8 @@ jobs:
           name: انباربان ${{ github.ref_name }} — آفلاین (برنامه + پیش‌نیاز جدا)
           body_path: release/RELEASE_NOTES_${{ github.ref_name }}.md
           files: |
-            release/Anbarban-v3-App.zip
-            release/Anbarban-v3-Prerequisites.zip
             release/Anbarban-v3-Portable.zip
+            release/Anbarban-v3-Prerequisites.zip
           fail_on_unmatched_files: true
           make_latest: true
 

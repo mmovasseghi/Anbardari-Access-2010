@@ -5,7 +5,7 @@
 ═══════════════════════════════════════════
 
 ۱) دو فایل ZIP از Release گیت‌هاب:
-   • Anbarban-v3-App.zip          ← برنامه
+   • Anbarban-v3-Portable.zip     ← برنامه (پرتابل)
    • Anbarban-v3-Prerequisites.zip ← این پوشه
 
 ۲) هر دو را در یک مسیر Extract کنید، مثلاً:

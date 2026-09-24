@@ -39,7 +39,7 @@ namespace Anbarban.Services
 
         public static string OfflineHelpText =>
             "این سیستم به اینترنت وصل نیست — پیش‌نیازها را از Release گیت‌هاب (فایل جدا) یک‌بار دانلود کنید." + Environment.NewLine + Environment.NewLine +
-            "۱) دو فایل ZIP را بگیرید: «برنامه» + «پیش‌نیازها»" + Environment.NewLine +
+            "۱) دو فایل ZIP را بگیرید: Anbarban-v3-Portable.zip + Anbarban-v3-Prerequisites.zip" + Environment.NewLine +
             "۲) هر دو را در یک پوشه Extract کنید (مثلاً D:\\Anbarban)" + Environment.NewLine +
             "۳) باید پوشه prerequisites کنار Anbarban.exe باشد" + Environment.NewLine +
             "۴) اول پیش‌نیازها را نصب کنید، بعد «شروع انباربان.bat»";

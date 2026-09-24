@@ -9,22 +9,22 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5">دانلود v3.0.5 (آفلاین)</a>
+  <a href="https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.6">دانلود v3.0.6 (آفلاین)</a>
   ·
   <a href="v3/README.md">راهنمای توسعه‌دهنده</a>
   ·
-  <a href="release/RELEASE_NOTES_v3.0.5.md">یادداشت انتشار</a>
+  <a href="release/RELEASE_NOTES_v3.0.6.md">یادداشت انتشار</a>
 </p>
 
 ---
 
 ## دانلود و اجرا (PC انبار **بدون اینترنت**)
 
-از [Release v3.0.5](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5) **دو فایل** بگیرید (یک‌بار با USB یا PC دیگر):
+از [Release v3.0.6](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.6) **دو فایل** بگیرید (یک‌بار با USB یا PC دیگر):
 
 | فایل | کار |
 |------|-----|
-| **`Anbarban-v3-App.zip`** | برنامه |
+| **`Anbarban-v3-Portable.zip`** | برنامهٔ پرتابل (بدون نصب Setup) |
 | **`Anbarban-v3-Prerequisites.zip`** | .NET 4.8 + ACE 64-bit + `نصب-پیش‌نیازها.bat` |
 
 | مرحله | کار |
@@ -144,7 +144,7 @@ portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 
 | نسخه | مخاطب | دانلود |
 |------|--------|--------|
-| **v3** | **پیشنهاد — WPF آفلاین** | [v3.0.5](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.5) |
+| **v3** | **پیشنهاد — WPF آفلاین** | [v3.0.6](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v3.0.6) |
 | v2.0 | داخل Microsoft Access 2010 | [v2.0.0](https://github.com/mmovasseghi/Anbardari-Access-2010/releases/tag/v2.0.0) · [`release/Anbarban-v2.0-Access-2010.zip`](release/Anbarban-v2.0-Access-2010.zip) |
 | v1.0 | پرتابل مرورگر (legacy) | [`release/Anbardari-v1.0-Windows.zip`](release/Anbardari-v1.0-Windows.zip) |
 
@@ -180,4 +180,4 @@ portable/              نسخه ۱ — HTA/مرورگر (قدیمی)
 
 ---
 
-<p align="center"><sub>نسخهٔ README برای <strong>انباربان v3</strong> — آخرین پرتابل: <strong>v3.0.4</strong></sub></p>
+<p align="center"><sub>نسخهٔ README برای <strong>انباربان v3</strong> — آخرین Release: <strong>v3.0.6</strong> (Portable + Prerequisites)</sub></p>
