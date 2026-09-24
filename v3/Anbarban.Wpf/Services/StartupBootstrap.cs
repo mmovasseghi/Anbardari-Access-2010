@@ -76,7 +76,7 @@ namespace Anbarban.Services
             if (AceInstaller.HasBundledInstaller)
                 return LaunchInstallerAndExit();
 
-            UiDialog.Info("در حال آماده‌سازی فایل نصب موتور پایگاه… لطفاً چند لحظه صبر کنید.");
+            AnbarbanDialog.Info("در حال آماده‌سازی فایل نصب موتور پایگاه… لطفاً چند لحظه صبر کنید.");
             try
             {
                 var (ok, log) = Task.Run(() => AceInstaller.TryDownloadInstallerAsync()).GetAwaiter().GetResult();

@@ -7,7 +7,7 @@
 │  Anbarban.exe (WPF .NET 4.8) │  ← UI زیبا، فارسی، RTL
 │  Win7+ | پرتابل | سبک        │
 └──────────────┬──────────────┘
-               │ OLE DB (ACE 12.0)
+               │ OLE DB (ACE 16/12 — خودکار)
                ▼
 ┌─────────────────────────────┐
 │  Data\Inventory.accdb        │  ← همان شمای v2 (۷ جدول)
@@ -23,7 +23,7 @@
 | مورد | توضیح |
 |------|--------|
 | .NET Framework **4.8** | [دانلود مایکروسافت](https://dotnet.microsoft.com/download/dotnet-framework/net48) |
-| **ACE OLEDB 12.0** | Access Database Engine 2010 Redistributable — **64-bit** (هم‌تراز build x64) |
+| **ACE OLEDB 64-bit** | در اولین اجرا **نصب/دانلود خودکار**؛ یا دستی از پوشه `redist` (هم‌تراز build x64) |
 | `Inventory.accdb` | در پوشه `Data` کنار exe |
 
 ## ساخت روی ویندوز (توسعه‌دهنده)
